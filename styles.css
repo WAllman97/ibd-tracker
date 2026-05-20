@@ -1,16 +1,92 @@
-* {
+/* ============================================================
+   CSS Custom Properties
+   ============================================================ */
+:root {
+  /* Brand Colors */
+  --color-brand:        #245953;
+  --color-brand-dark:   #1b403c;
+  --color-brand-deeper: #163832;
+  --color-brand-light:  #e5f2ef;
+
+  /* Semantic / State Colors */
+  --color-warning-border: #d97706;
+  --color-warning-bg:     #fffbeb;
+  --color-warning-heading:#b45309;
+  --color-warning-text:   #92400e;
+  --color-warning-detail: #6b5e00;
+
+  --color-info-border:    #2563eb;
+  --color-info-bg:        #eff6ff;
+  --color-info-heading:   #1e40af;
+  --color-info-text:      #1e3a8a;
+
+  --color-danger:         #dc2626;
+  --color-danger-dark:    #b91c1c;
+
+  --color-success:        #10b981;
+
+  /* Neutral Palette */
+  --color-bg:             #f4f7f6;
+  --color-surface:        #ffffff;
+  --color-surface-input:  #fbfdfc;
+  --color-border:         #ccd5d3;
+  --color-text:           #1f2933;
+  --color-text-label:     #263238;
+  --color-text-muted:     #9ca3af;
+  --color-text-secondary: #374151;
+  --color-table-head-bg:  #f3f4f6;
+  --color-table-border:   #e5e7eb;
+  --color-table-row-hover:#f9fafb;
+  --color-btn-secondary:  #e5e7eb;
+  --color-btn-secondary-hover: #d1d5db;
+
+  /* Score / Flare Badge Colors */
+  --color-score-high:      #dc2626;
+  --color-score-medium:    #d97706;
+  --color-score-low:       #10b981;
+
+  --color-flare-severe-bg: #fee2e2;
+  --color-flare-severe-fg: #991b1b;
+  --color-flare-moderate-bg: #fef3c7;
+  --color-flare-moderate-fg: #92400e;
+  --color-flare-mild-bg:   #dbeafe;
+  --color-flare-mild-fg:   #0c4a6e;
+  --color-flare-none-bg:   #dcfce7;
+  --color-flare-none-fg:   #166534;
+
+  /* Spacing & Shape */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-btn-primary: 0 4px 12px rgba(36, 89, 83, 0.3);
+  --shadow-toast: 0 4px 12px rgba(16, 185, 129, 0.4);
+
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(36, 89, 83, 0.15);
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #f4f7f6;
-  color: #1f2933;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
+/* ============================================================
+   Hero
+   ============================================================ */
 .hero {
-  background: linear-gradient(135deg, #245953, #163832);
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-deeper));
   color: white;
   text-align: center;
   padding: 56px 20px;
@@ -25,43 +101,51 @@ body {
 .hero p {
   margin-top: 12px;
   font-size: 18px;
-  color: #e5f2ef;
+  color: var(--color-brand-light);
 }
 
+/* ============================================================
+   Layout
+   ============================================================ */
 .container {
   max-width: 1000px;
   margin: 36px auto;
   padding: 0 20px;
 }
 
+/* ============================================================
+   Card
+   ============================================================ */
 .card {
-  background: white;
+  background: var(--color-surface);
   padding: 28px;
   margin-bottom: 24px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .card h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #245953;
+  color: var(--color-brand);
   font-size: 24px;
 }
 
-/* Warning Alert Section */
+/* ============================================================
+   Alert / Warning Cards
+   ============================================================ */
 .warning {
-  border-left: 6px solid #d97706;
-  background: #fffbeb;
+  border-left: 6px solid var(--color-warning-border);
+  background: var(--color-warning-bg);
 }
 
 .warning h2 {
-  color: #b45309;
+  color: var(--color-warning-heading);
   margin-bottom: 12px;
 }
 
 .warning p {
-  color: #92400e;
+  color: var(--color-warning-text);
   margin: 8px 0;
   font-weight: 500;
 }
@@ -69,10 +153,10 @@ body {
 .warning-details {
   margin-top: 12px;
   padding: 12px;
-  background: white;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
   font-size: 14px;
-  color: #6b5e00;
+  color: var(--color-warning-detail);
 }
 
 .warning-details div {
@@ -81,25 +165,27 @@ body {
 
 .warning.hidden,
 .hidden {
-  display: none !important;
+  display: none;
 }
 
 .warning-info {
-  border-left: 6px solid #2563eb;
-  background: #eff6ff;
+  border-left: 6px solid var(--color-info-border);
+  background: var(--color-info-bg);
 }
 
 .warning-info h2 {
-  color: #1e40af;
+  color: var(--color-info-heading);
   margin-bottom: 12px;
 }
 
 .warning-info p {
-  color: #1e3a8a;
+  color: var(--color-info-text);
   margin: 0;
 }
 
-/* Form Styles */
+/* ============================================================
+   Form
+   ============================================================ */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -119,7 +205,7 @@ body {
 label {
   margin-bottom: 8px;
   font-weight: 600;
-  color: #263238;
+  color: var(--color-text-label);
   font-size: 14px;
 }
 
@@ -128,10 +214,10 @@ select,
 textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ccd5d3;
-  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-size: 16px;
-  background-color: #fbfdfc;
+  background-color: var(--color-surface-input);
   font-family: inherit;
 }
 
@@ -139,8 +225,8 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #245953;
-  box-shadow: 0 0 0 3px rgba(36, 89, 83, 0.15);
+  border-color: var(--color-brand);
+  box-shadow: var(--focus-ring);
 }
 
 textarea {
@@ -153,7 +239,9 @@ input[type="date"] {
   font-family: monospace;
 }
 
-/* Buttons */
+/* ============================================================
+   Buttons
+   ============================================================ */
 .form-actions {
   display: flex;
   gap: 12px;
@@ -163,60 +251,74 @@ input[type="date"] {
 button {
   padding: 12px 24px;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Shared focus ring for buttons (keyboard accessibility) */
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .btn-primary {
   flex: 1;
-  background-color: #245953;
+  background-color: var(--color-brand);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #1b403c;
+  background-color: var(--color-brand-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(36, 89, 83, 0.3);
+  box-shadow: var(--shadow-btn-primary);
 }
 
 .btn-secondary {
   flex: 1;
-  background-color: #e5e7eb;
-  color: #374151;
+  background-color: var(--color-btn-secondary);
+  color: var(--color-text-secondary);
 }
 
 .btn-secondary:hover {
-  background-color: #d1d5db;
+  background-color: var(--color-btn-secondary-hover);
 }
 
 .btn-danger {
-  background-color: #dc2626;
+  flex: 1;
+  background-color: var(--color-danger);
   color: white;
 }
 
 .btn-danger:hover {
-  background-color: #b91c1c;
+  background-color: var(--color-danger-dark);
 }
 
 button:active {
   transform: translateY(0);
 }
 
-/* Success Toast */
+/* ============================================================
+   Toast
+   ============================================================ */
 .toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #10b981;
+  background: var(--color-success);
   color: white;
   padding: 16px 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-  animation: slideUp 0.3s ease;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-toast);
   z-index: 1000;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: slideUp 0.3s ease;
+  }
 }
 
 @keyframes slideUp {
@@ -230,7 +332,9 @@ button:active {
   }
 }
 
-/* Entry History */
+/* ============================================================
+   Entry History
+   ============================================================ */
 .history-header {
   display: flex;
   justify-content: space-between;
@@ -260,15 +364,15 @@ button:active {
 }
 
 .entries-table thead {
-  background: #f3f4f6;
+  background: var(--color-table-head-bg);
 }
 
 .entries-table th {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 2px solid #e5e7eb;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-table-border);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -276,56 +380,48 @@ button:active {
 
 .entries-table td {
   padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-table-border);
   font-size: 14px;
 }
 
 .entries-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--color-table-row-hover);
 }
 
-.entries-table .score-high {
-  color: #dc2626;
-  font-weight: 600;
-}
+/* Score colors */
+.entries-table .score-high   { color: var(--color-score-high);   font-weight: 600; }
+.entries-table .score-medium { color: var(--color-score-medium); font-weight: 600; }
+.entries-table .score-low    { color: var(--color-score-low); }
 
-.entries-table .score-medium {
-  color: #d97706;
-  font-weight: 600;
-}
-
-.entries-table .score-low {
-  color: #10b981;
-}
-
+/* Flare badges */
 .entries-table .flare-severe {
-  background: #fee2e2;
+  background: var(--color-flare-severe-bg);
+  color: var(--color-flare-severe-fg);
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
-  color: #991b1b;
 }
 
 .entries-table .flare-moderate {
-  background: #fef3c7;
+  background: var(--color-flare-moderate-bg);
+  color: var(--color-flare-moderate-fg);
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
-  color: #92400e;
 }
 
 .entries-table .flare-mild {
-  background: #dbeafe;
+  background: var(--color-flare-mild-bg);
+  color: var(--color-flare-mild-fg);
   padding: 4px 8px;
-  border-radius: 6px;
-  color: #0c4a6e;
+  border-radius: var(--radius-sm);
 }
 
 .entries-table .flare-none {
-  background: #dcfce7;
+  background: var(--color-flare-none-bg);
+  color: var(--color-flare-none-fg);
   padding: 4px 8px;
-  border-radius: 6px;
-  color: #166534;
+  border-radius: var(--radius-sm);
 }
 
 .btn-delete {
@@ -333,21 +429,23 @@ button:active {
   color: white;
   padding: 6px 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .btn-delete:hover {
-  background-color: #dc2626;
+  background-color: var(--color-danger);
 }
 
-/* Empty State */
+/* ============================================================
+   Empty State
+   ============================================================ */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .empty-state p {
@@ -355,7 +453,9 @@ button:active {
   font-size: 16px;
 }
 
-/* Data Actions */
+/* ============================================================
+   Data Actions
+   ============================================================ */
 .data-actions {
   display: flex;
   gap: 12px;
@@ -367,15 +467,33 @@ button:active {
   min-width: 180px;
 }
 
-/* Footer */
+/* ============================================================
+   Footer
+   ============================================================ */
 footer {
   text-align: center;
   padding: 28px 20px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 
-/* Responsive Design */
+/* ============================================================
+   Reduced Motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+
+  .btn-primary:hover,
+  button:active {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Responsive — Tablet
+   ============================================================ */
 @media (max-width: 768px) {
   .hero h1 {
     font-size: 32px;
@@ -425,6 +543,9 @@ footer {
   }
 }
 
+/* ============================================================
+   Responsive — Mobile
+   ============================================================ */
 @media (max-width: 480px) {
   .container {
     padding: 0 12px;
@@ -468,4 +589,3 @@ footer {
     width: 100%;
   }
 }
-
