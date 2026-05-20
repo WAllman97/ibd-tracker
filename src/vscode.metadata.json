@@ -1,0 +1,10 @@
+{
+  "origin": "vscode",
+  "modified": 1779272492827,
+  "created": 1779269699249,
+  "workspaceFolder": {
+    "folderPath": "c:\\Users\\wallman_cau\\Caius Capital LLP\\Team - Team\\Will A\\Python",
+    "timestamp": 1779272492819
+  },
+  "firstUserMessage": "You are a senior full-stack developer. I have a basic static HTML/CSS website called “Guts 2 Brain / IBD Tracker” deployed on GitHub Pages.\r\n\r\nCurrent files:\r\n- index.html\r\n- styles.css\r\n\r\nCurrent form tracks:\r\ndate, bloating, pain, stress, fatigue, stool score, day type, flare status, blood/mucus, key foods, notes, email.\r\n\r\nPlease review the current structure and give me a practical roadmap to turn this into a multi-user IBD tracking web app with:\r\n- user accounts\r\n- secure database storage\r\n- symptom history\r\n- trend charts\r\n- flare-up warning logic\r\n- food/trigger correlation analysis\r\n- exportable reports\r\n\r\nAssume I am still learning web development. Explain the recommended stack and next steps clearly.\n <reminder>\nIMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task\n</reminder>\n<attachments>\n<attachment id=\"Guts 2 Brain\" folderPath=\"c:\\\\Users\\\\wallman_cau\\\\Caius Capital LLP\\\\Team - Team\\\\Will A\\\\Python\\\\Guts 2 Brain\" />\n</attachments>\n<userRequest>\nYou are a senior full-stack developer. I have a basic static HTML/CSS website called “Guts 2 Brain / IBD Tracker” deployed on GitHub Pages.\r\n\r\nCurrent files:\r\n- index.html\r\n- styles.css\r\n\r\nCurrent form tracks:\r\ndate, bloating, pain, stress, fatigue, stool score, day type, flare status, blood/mucus, key foods, notes, email.\r\n\r\nPlease review the current structure and give me a practical roadmap to turn this into a multi-user IBD tracking web app with:\r\n- user accounts\r\n- secure database storage\r\n- symptom history\r\n- trend charts\r\n- flare-up warning logic\r\n- food/trigger correlation analysis\r\n- exportable reports\r\n\r\nAssume I am still learning web development. Explain the recommended stack and next steps clearly.\n</userRequest>\n"
+}

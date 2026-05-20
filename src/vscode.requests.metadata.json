@@ -1,0 +1,85 @@
+[
+  {
+    "vscodeRequestId": "request_8d34af9b-e4ca-48ca-acd1-02c0a8f84ef7",
+    "copilotRequestId": "e347ce40-eae7-451a-95b9-3cc72713ae71",
+    "toolIdEditMap": {}
+  },
+  {
+    "vscodeRequestId": "request_58cbddd9-1f47-4c8b-a5ba-b9e30e02e900",
+    "agentId": "",
+    "toolIdEditMap": {
+      "tooluse_g7KlsfoQoAeJ5ZcQ2L1DL7": "bf6efee4-876b-4a4f-824c-0646d7c681ee",
+      "tooluse_V4tjjIwmRtMDh4vXuKoUQw": "b2c5ebf7-2cf5-4f68-a4a0-6ad613379ffe",
+      "tooluse_g5rsBs9hM9WMzRvC3k3dKs": "78bac203-7e3c-4c67-b883-069259b54bfc"
+    },
+    "copilotRequestId": "e2f4c1ac-bb71-4a0e-bf54-8c66dee36f80",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_bfb6507c-f855-449f-9f23-280763df2c9c",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "6a4de530-5c3d-45b3-ae94-0cb0e9193627",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_ad623e0c-e27f-4471-846e-125de2ef6eaa",
+    "agentId": "",
+    "toolIdEditMap": {
+      "tooluse_bP7kkJk1RLX2BK8GYE75LF": "585ac5ac-18c2-4515-8a2e-1e97031a09f5"
+    },
+    "copilotRequestId": "f6bd343e-23db-488c-95da-9ea2ce8b50ba",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_13ea2ef7-bb85-4b76-a80c-8515ad234a68",
+    "agentId": "",
+    "toolIdEditMap": {
+      "tooluse_AdtcSHhgjn46HJGdbtq3jD": "10c441cd-b460-4021-a676-cf3664c31b31"
+    },
+    "copilotRequestId": "efa37c62-fc8e-49bb-a21b-2ed80c1cda60",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_c4707ce5-b9c4-43c4-bec2-307f363e45ee",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "428dc203-b43d-4bca-8235-eb03a897c114",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_3c575855-315d-4d14-8383-404ef7ad2f22",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "282054e6-ac43-49a6-bab8-3303796124ac",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_61e723c0-cb83-4541-b315-11c6c9b29351",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "d31692fb-92b5-41cf-8409-8b0324b84d11",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_acfcce80-a966-4520-a7d2-6b7b03967a9a",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "667c59ea-766f-48c4-9b81-58beb7984e31",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_940e30ca-47de-4317-a139-bb4cb7e00622",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "f2b854cd-6146-400d-a1c3-eb7cb373861b",
+    "responseModelId": "claude-haiku-4.5"
+  },
+  {
+    "vscodeRequestId": "request_aeceedde-a76e-4201-8976-adf4e78ca64d",
+    "agentId": "",
+    "toolIdEditMap": {},
+    "copilotRequestId": "34f9ae09-bb88-47a5-a40f-1b69022bb195",
+    "responseModelId": "claude-haiku-4.5"
+  }
+]

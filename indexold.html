@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IBD Symptom Tracker</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>IBD Symptom Tracker</h1>
+      <p>A simple page for tracking daily symptoms, food, medication, and notes.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>About IBD</h2>
+        <p>
+          Inflammatory Bowel Disease, or IBD, includes conditions such as
+          Crohn’s disease and ulcerative colitis. This page is for personal
+          tracking only and is not medical advice.
+        </p>
+      </section>
+
+      <section>
+        <h2>Daily Check-In</h2>
+
+        <form>
+          <label for="date">Date:</label><br />
+          <input type="date" id="date" name="date" /><br /><br />
+
+          <label for="pain">Abdominal pain level:</label><br />
+          <select id="pain" name="pain">
+            <option value="">Select</option>
+            <option value="0">0 - None</option>
+            <option value="1">1 - Mild</option>
+            <option value="2">2 - Moderate</option>
+            <option value="3">3 - Severe</option>
+          </select><br /><br />
+
+          <label for="stools">Number of bowel movements:</label><br />
+          <input type="number" id="stools" name="stools" min="0" /><br /><br />
+
+          <label for="blood">Blood present?</label><br />
+          <select id="blood" name="blood">
+            <option value="">Select</option>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select><br /><br />
+
+          <label for="food">Food notes:</label><br />
+          <textarea id="food" name="food" rows="4" cols="40"></textarea><br /><br />
+
+          <label for="notes">Other notes:</label><br />
+          <textarea id="notes" name="notes" rows="4" cols="40"></textarea><br /><br />
+
+          <button type="submit">Save entry</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>When to seek help</h2>
+        <p>
+          Speak to a healthcare professional if symptoms worsen, bleeding
+          increases, pain becomes severe, or you feel seriously unwell.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Created as a basic HTML learning project.</p>
+    </footer>
+  </body>
+</html>

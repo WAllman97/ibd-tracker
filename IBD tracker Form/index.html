@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IBD Symptom Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header class="hero">
+      <h1>IBD Symptom Tracker</h1>
+      <p>Track symptoms, flare status, and daily health in one place.</p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Daily Check-In</h2>
+
+        <form>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" />
+            </div>
+
+            <div class="form-group">
+              <label for="bloating">Bloating</label>
+              <input type="number" id="bloating" name="bloating" min="0" max="10" />
+            </div>
+
+            <div class="form-group">
+              <label for="pain">Pain</label>
+              <input type="number" id="pain" name="pain" min="0" max="10" />
+            </div>
+
+            <div class="form-group">
+              <label for="stress">Stress</label>
+              <input type="number" id="stress" name="stress" min="0" max="10" />
+            </div>
+
+            <div class="form-group">
+              <label for="fatigue">Fatigue</label>
+              <input type="number" id="fatigue" name="fatigue" min="0" max="10" />
+            </div>
+
+            <div class="form-group">
+              <label for="stool">Stool Score (1-7)</label>
+              <input type="number" id="stool" name="stool" min="1" max="7" />
+            </div>
+
+            <div class="form-group">
+              <label for="day-type">Day Type</label>
+              <select id="day-type" name="day-type">
+                <option value="">Select</option>
+                <option value="normal">Normal</option>
+                <option value="work">Work</option>
+                <option value="travel">Travel</option>
+                <option value="social">Social</option>
+                <option value="rest">Rest day</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="flare-status">Flare Status</label>
+              <select id="flare-status" name="flare-status">
+                <option value="">Select</option>
+                <option value="none">None</option>
+                <option value="mild">Mild</option>
+                <option value="moderate">Moderate</option>
+                <option value="severe">Severe</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="blood-mucus">Blood / Mucus</label>
+              <select id="blood-mucus" name="blood-mucus">
+                <option value="">Select</option>
+                <option value="none">None</option>
+                <option value="blood">Blood</option>
+                <option value="mucus">Mucus</option>
+                <option value="both">Blood and mucus</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="key-foods">Key Foods</label>
+              <textarea id="key-foods" name="key-foods" rows="4"></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="notes">Notes</label>
+              <textarea id="notes" name="notes" rows="4"></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" />
+            </div>
+
+          </div>
+
+          <button type="submit">Save entry</button>
+        </form>
+      </section>
+
+      <section class="card warning">
+        <h2>When to seek help</h2>
+        <p>
+          Seek medical advice if symptoms worsen, bleeding increases,
+          or pain becomes severe.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Created as a basic HTML and CSS learning project.</p>
+    </footer>
+  </body>
+</html>
