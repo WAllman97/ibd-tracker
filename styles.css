@@ -343,15 +343,6 @@ button:active {
   background-color: #dc2626;
 }
 
-.btn-danger {
-  background-color: #dc2626;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #b91c1c;
-}
-
 /* Empty State */
 .empty-state {
   text-align: center;
@@ -477,3 +468,4 @@ footer {
     width: 100%;
   }
 }
+
