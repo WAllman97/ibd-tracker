@@ -1,36 +1,27 @@
 import { getWarningMessage } from '../utils/flareCalculations'
 
-/**
- * WarningAlert Component
- * 
- * Displays a warning box if flare risk is high
- * Shows:
- * - Risk score (0-100)
- * - Warning message
- * - Detailed breakdown of risk factors
- * 
- * Props:
- * - entries: array of entry objects
- */
-
 function WarningAlert({ entries }) {
-  const warning = getWarningMessage(entries)
+  const safeEntries = Array.isArray(entries) ? entries : []
 
-  // If no warning, don't render anything
+  if (safeEntries.length === 0) {
+    return null
+  }
+
+  const latestEntry = [...safeEntries].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  )[0]
+
+  const warning = getWarningMessage(latestEntry)
+
   if (!warning) {
     return null
   }
 
   return (
-    <section className="card warning">
-      <h2>⚠️ Flare Risk Alert</h2>
-      <p>
-        Risk Score: <strong>{warning.score}/100</strong> - {warning.message}
-      </p>
-      <div className="warning-details">
-        {warning.details.map((detail, index) => (
-          <div key={index}>{detail}</div>
-        ))}
+    <section className={`warning-alert warning-${warning.level}`}>
+      <div className="warning-alert-content">
+        <h3>{warning.title}</h3>
+        <p>{warning.message}</p>
       </div>
     </section>
   )

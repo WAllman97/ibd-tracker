@@ -1,65 +1,57 @@
-import { calculateFlareRiskScore, analyzeTrends } from '../utils/flareCalculations'
-
-/**
- * DashboardSummary Component
- * 
- * Displays summary cards with key statistics:
- * - Average pain and bloating
- * - Current flare status
- * - Number of entries
- * - Trend indicator
- * 
- * Props:
- * - entries: array of entry objects
- */
+import { calculateFlareRiskScore } from '../utils/flareCalculations'
 
 function DashboardSummary({ entries }) {
-  /**
-   * Calculate average pain over all entries
-   */
+  const safeEntries = Array.isArray(entries) ? entries : []
+
   function getAveragePain() {
-    if (entries.length === 0) return 0
-    const total = entries.reduce((sum, e) => sum + e.pain, 0)
-    return (total / entries.length).toFixed(1)
+    if (safeEntries.length === 0) return 0
+    const total = safeEntries.reduce((sum, e) => sum + Number(e.pain || 0), 0)
+    return (total / safeEntries.length).toFixed(1)
   }
 
-  /**
-   * Calculate average bloating over all entries
-   */
   function getAverageBloating() {
-    if (entries.length === 0) return 0
-    const total = entries.reduce((sum, e) => sum + e.bloating, 0)
-    return (total / entries.length).toFixed(1)
+    if (safeEntries.length === 0) return 0
+    const total = safeEntries.reduce((sum, e) => sum + Number(e.bloating || 0), 0)
+    return (total / safeEntries.length).toFixed(1)
   }
 
-  /**
-   * Get latest flare status
-   */
+  function getLatestEntry() {
+    if (safeEntries.length === 0) return null
+    return [...safeEntries].sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+  }
+
   function getLatestFlareStatus() {
-    if (entries.length === 0) return 'None'
-    return entries[entries.length - 1].flareStatus || 'None'
+    const latest = getLatestEntry()
+    if (!latest) return 'None'
+
+    const score = calculateFlareRiskScore(latest)
+
+    if (score >= 7) return 'High'
+    if (score >= 4) return 'Moderate'
+    return 'Low'
   }
 
-  /**
-   * Get current trend
-   */
   function getTrend() {
-    const trends = analyzeTrends(entries)
-    if (!trends) return 'stable'
-    return trends.trend
+    if (safeEntries.length < 2) return 'stable'
+
+    const sorted = [...safeEntries].sort((a, b) => new Date(a.date) - new Date(b.date))
+    const recent = sorted.slice(-7)
+
+    if (recent.length < 2) return 'stable'
+
+    const firstScore = calculateFlareRiskScore(recent[0])
+    const lastScore = calculateFlareRiskScore(recent[recent.length - 1])
+
+    return lastScore > firstScore + 1 ? 'rising' : 'stable'
   }
 
-  /**
-   * Count flare days in past 7 days
-   */
   function getRecentFlareDays() {
-    if (entries.length === 0) return 0
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - 7)
-    
-    return entries
-      .filter(e => new Date(e.date) >= cutoffDate)
-      .filter(e => e.flareStatus !== 'none' && e.flareStatus !== '')
+
+    return safeEntries
+      .filter((e) => new Date(e.date) >= cutoffDate)
+      .filter((e) => calculateFlareRiskScore(e) >= 4)
       .length
   }
 
@@ -71,7 +63,6 @@ function DashboardSummary({ entries }) {
 
   return (
     <section className="dashboard-summary">
-      {/* Summary Card: Average Pain */}
       <div className="summary-card">
         <div className="summary-card-content">
           <h3>Avg Pain</h3>
@@ -80,7 +71,6 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
 
-      {/* Summary Card: Average Bloating */}
       <div className="summary-card">
         <div className="summary-card-content">
           <h3>Avg Bloating</h3>
@@ -89,40 +79,36 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
 
-      {/* Summary Card: Latest Flare */}
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Current Flare</h3>
+          <h3>Current Flare Risk</h3>
           <div className={`summary-value flare-${latestFlare.toLowerCase()}`}>
             {latestFlare}
           </div>
         </div>
       </div>
 
-      {/* Summary Card: Trend */}
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Trend (7d)</h3>
+          <h3>Trend 7d</h3>
           <div className={`summary-value trend-${trend}`}>
             {trend === 'rising' ? '📈 Rising' : '📊 Stable'}
           </div>
         </div>
       </div>
 
-      {/* Summary Card: Flare Days */}
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Flare Days</h3>
+          <h3>Risk Days</h3>
           <div className="summary-value">{recentFlares}</div>
           <p className="summary-label">in past 7 days</p>
         </div>
       </div>
 
-      {/* Summary Card: Total Entries */}
       <div className="summary-card">
         <div className="summary-card-content">
           <h3>Total Entries</h3>
-          <div className="summary-value">{entries.length}</div>
+          <div className="summary-value">{safeEntries.length}</div>
           <p className="summary-label">tracked</p>
         </div>
       </div>

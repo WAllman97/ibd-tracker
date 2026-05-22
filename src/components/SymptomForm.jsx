@@ -1,305 +1,375 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-/**
- * SymptomForm Component
- * 
- * Displays the form for entering daily symptoms.
- * 
- * Features:
- * - Auto-populate date with today
- * - Auto-set "Work" for weekdays, blank for weekends
- * - Auto-set Flare Status and Blood/Mucus to "none"
- * - Show success message after submit
- * - Reset form after submit
- * 
- * Props:
- * - onAddEntry: function called when form is submitted
- */
+const initialForm = {
+  date: '',
+  pain: 0,
+  bloating: 0,
+  fatigue: 0,
+  stress: 0,
+  stool: 4,
+  dayType: '',
+  flareStatus: 'none',
+  bloodMucus: 'none',
+  keyFoods: '',
+  notes: '',
+}
+
+function getToday() {
+  return new Date().toISOString().split('T')[0]
+}
+
+function getDefaultDayType(dateStr) {
+  const date = new Date(dateStr)
+  const day = date.getDay()
+
+  return day >= 1 && day <= 5 ? 'work' : 'normal'
+}
+
+function ScoreSlider({
+  label,
+  name,
+  value,
+  onChange,
+  leftLabel,
+  rightLabel,
+}) {
+  return (
+    <div className="quick-metric">
+      <div className="metric-topline">
+        <label htmlFor={name}>{label}</label>
+        <strong>{value}/10</strong>
+      </div>
+
+      <input
+        id={name}
+        name={name}
+        type="range"
+        min="0"
+        max="10"
+        value={value}
+        onChange={onChange}
+      />
+
+      <div className="metric-scale">
+        <span>{leftLabel}</span>
+        <span>{rightLabel}</span>
+      </div>
+    </div>
+  )
+}
+
+function StoolSelector({ value, onChange }) {
+  const scores = [1, 2, 3, 4, 5, 6, 7]
+
+  return (
+    <div className="quick-metric">
+      <div className="metric-topline">
+        <label>Stool score</label>
+        <strong>{value}/7</strong>
+      </div>
+
+      <div className="stool-selector">
+        {scores.map((score) => (
+          <button
+            key={score}
+            type="button"
+            className={Number(value) === score ? 'selected' : ''}
+            onClick={() =>
+              onChange({
+                target: {
+                  name: 'stool',
+                  value: score,
+                },
+              })
+            }
+          >
+            {score}
+          </button>
+        ))}
+      </div>
+
+      <div className="metric-scale">
+        <span>Hard</span>
+        <span>Loose</span>
+      </div>
+    </div>
+  )
+}
 
 function SymptomForm({ onAddEntry }) {
-  // Form state - each input field has its own state
-  const [formData, setFormData] = useState({
-    date: '',
-    bloating: '',
-    pain: '',
-    stress: '',
-    fatigue: '',
-    stool: '',
-    dayType: '',
-    flareStatus: 'none',
-    bloodMucus: 'none',
-    keyFoods: '',
-    notes: ''
-  })
-
+  const [formData, setFormData] = useState(initialForm)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
 
-  /**
-   * useEffect: Run once on component mount
-   * Set today's date and auto-populate day type
-   */
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]
-    setFormData(prev => ({
+    const today = getToday()
+
+    setFormData((prev) => ({
       ...prev,
       date: today,
       dayType: getDefaultDayType(today),
-      flareStatus: 'none',
-      bloodMucus: 'none'
     }))
   }, [])
 
-  /**
-   * Helper: Determine if date is a weekday
-   * Returns "work" for Mon-Fri, empty string for weekends
-   */
-  function getDefaultDayType(dateStr) {
-    const date = new Date(dateStr)
-    const dayOfWeek = date.getDay() // 0=Sunday, 1=Monday, etc.
-    return (dayOfWeek >= 1 && dayOfWeek <= 5) ? 'work' : ''
-  }
-
-  /**
-   * Handle input changes
-   * Updates state as user types/changes fields
-   */
   function handleChange(e) {
     const { name, value } = e.target
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }))
   }
 
-  /**
-   * Handle date change
-   * Also updates day type based on new date
-   */
   function handleDateChange(e) {
-    const newDate = e.target.value
-    setFormData(prev => ({
+    const date = e.target.value
+
+    setFormData((prev) => ({
       ...prev,
-      date: newDate,
-      dayType: getDefaultDayType(newDate)
+      date,
+      dayType: getDefaultDayType(date),
     }))
   }
 
-  /**
-   * Handle form submission
-   */
+  function getQuickRead() {
+    const total =
+      Number(formData.pain) +
+      Number(formData.bloating) +
+      Number(formData.fatigue) +
+      Number(formData.stress)
+
+    if (
+      formData.bloodMucus !== 'none' ||
+      formData.flareStatus === 'severe'
+    ) {
+      return {
+        label: 'Rough day',
+        className: 'read-bad',
+      }
+    }
+
+    if (total >= 22 || formData.flareStatus === 'moderate') {
+      return {
+        label: 'Watch closely',
+        className: 'read-amber',
+      }
+    }
+
+    return {
+      label: 'Stable day',
+      className: 'read-good',
+    }
+  }
+
+  function resetForm() {
+    const today = getToday()
+
+    setFormData({
+      ...initialForm,
+      date: today,
+      dayType: getDefaultDayType(today),
+    })
+
+    setShowDetails(false)
+  }
+
   function handleSubmit(e) {
-    e.preventDefault() // Prevent page reload
-    
-    // Validate date is selected
+    e.preventDefault()
+
     if (!formData.date) {
       alert('Please select a date')
       return
     }
 
-    // Call parent component function with form data
-    onAddEntry(formData)
+    const result = onAddEntry(formData)
 
-    // Reset form
-    const today = new Date().toISOString().split('T')[0]
-    setFormData({
-      date: today,
-      bloating: '',
-      pain: '',
-      stress: '',
-      fatigue: '',
-      stool: '',
-      dayType: getDefaultDayType(today),
-      flareStatus: 'none',
-      bloodMucus: 'none',
-      keyFoods: '',
-      notes: ''
-    })
+    if (result && result.success === false) {
+      alert('Please check the form before saving.')
+      return
+    }
 
-    // Show success message
+    resetForm()
+
     setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 3000)
+
+    setTimeout(() => {
+      setShowSuccess(false)
+    }, 2500)
   }
+
+  const quickRead = getQuickRead()
 
   return (
     <>
-      {/* Success message toast */}
-      {showSuccess && (
-        <div className="toast">
-          ✓ Entry saved successfully!
-        </div>
-      )}
+      {showSuccess && <div className="toast">✓ Entry saved</div>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-grid">
-          {/* Date Input */}
-          <div className="form-group">
-            <label htmlFor="date">Date</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleDateChange}
-              required
-            />
+      <form onSubmit={handleSubmit} className="symptom-form">
+        <div className="form-intro">
+          <div>
+            <p className="eyebrow">Daily check-in</p>
+            <h3>How are you feeling today?</h3>
           </div>
 
-          {/* Pain Input */}
-          <div className="form-group">
-            <label htmlFor="pain">Pain (0-10)</label>
-            <input
-              type="number"
-              id="pain"
-              name="pain"
-              min="0"
-              max="10"
-              value={formData.pain}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Bloating Input */}
-          <div className="form-group">
-            <label htmlFor="bloating">Bloating (0-10)</label>
-            <input
-              type="number"
-              id="bloating"
-              name="bloating"
-              min="0"
-              max="10"
-              value={formData.bloating}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Stress Input */}
-          <div className="form-group">
-            <label htmlFor="stress">Stress (0-10)</label>
-            <input
-              type="number"
-              id="stress"
-              name="stress"
-              min="0"
-              max="10"
-              value={formData.stress}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Fatigue Input */}
-          <div className="form-group">
-            <label htmlFor="fatigue">Fatigue (0-10)</label>
-            <input
-              type="number"
-              id="fatigue"
-              name="fatigue"
-              min="0"
-              max="10"
-              value={formData.fatigue}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Stool Score Input */}
-          <div className="form-group">
-            <label htmlFor="stool">Stool Score (1-7)</label>
-            <input
-              type="number"
-              id="stool"
-              name="stool"
-              min="1"
-              max="7"
-              value={formData.stool}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Day Type Select */}
-          <div className="form-group">
-            <label htmlFor="day-type">Day Type</label>
-            <select
-              id="day-type"
-              name="dayType"
-              value={formData.dayType}
-              onChange={handleChange}
-            >
-              <option value="">Select</option>
-              <option value="normal">Normal</option>
-              <option value="work">Work</option>
-              <option value="travel">Travel</option>
-              <option value="social">Social</option>
-              <option value="rest">Rest day</option>
-            </select>
-          </div>
-
-          {/* Flare Status Select */}
-          <div className="form-group">
-            <label htmlFor="flare-status">Flare Status</label>
-            <select
-              id="flare-status"
-              name="flareStatus"
-              value={formData.flareStatus}
-              onChange={handleChange}
-            >
-              <option value="">Select</option>
-              <option value="none">None</option>
-              <option value="mild">Mild</option>
-              <option value="moderate">Moderate</option>
-              <option value="severe">Severe</option>
-            </select>
-          </div>
-
-          {/* Blood/Mucus Select */}
-          <div className="form-group">
-            <label htmlFor="blood-mucus">Blood / Mucus</label>
-            <select
-              id="blood-mucus"
-              name="bloodMucus"
-              value={formData.bloodMucus}
-              onChange={handleChange}
-            >
-              <option value="">Select</option>
-              <option value="none">None</option>
-              <option value="blood">Blood</option>
-              <option value="mucus">Mucus</option>
-              <option value="both">Blood and mucus</option>
-            </select>
-          </div>
-
-          {/* Key Foods Textarea */}
-          <div className="form-group full-width">
-            <label htmlFor="key-foods">Key Foods Eaten</label>
-            <textarea
-              id="key-foods"
-              name="keyFoods"
-              rows="3"
-              placeholder="e.g., oatmeal, banana, chicken"
-              value={formData.keyFoods}
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Notes Textarea */}
-          <div className="form-group full-width">
-            <label htmlFor="notes">Notes</label>
-            <textarea
-              id="notes"
-              name="notes"
-              rows="3"
-              placeholder="Any other observations..."
-              value={formData.notes}
-              onChange={handleChange}
-            />
+          <div className={`quick-read ${quickRead.className}`}>
+            {quickRead.label}
           </div>
         </div>
 
-        {/* Form Buttons */}
+        <div className="form-group">
+          <label htmlFor="date">Date</label>
+
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleDateChange}
+            required
+          />
+        </div>
+
+        <div className="quick-grid">
+          <ScoreSlider
+            label="Pain"
+            name="pain"
+            value={formData.pain}
+            onChange={handleChange}
+            leftLabel="None"
+            rightLabel="Severe"
+          />
+
+          <ScoreSlider
+            label="Bloating"
+            name="bloating"
+            value={formData.bloating}
+            onChange={handleChange}
+            leftLabel="None"
+            rightLabel="Severe"
+          />
+
+          <ScoreSlider
+            label="Fatigue"
+            name="fatigue"
+            value={formData.fatigue}
+            onChange={handleChange}
+            leftLabel="Fresh"
+            rightLabel="Exhausted"
+          />
+
+          <ScoreSlider
+            label="Stress"
+            name="stress"
+            value={formData.stress}
+            onChange={handleChange}
+            leftLabel="Calm"
+            rightLabel="High"
+          />
+
+          <StoolSelector
+            value={formData.stool}
+            onChange={handleChange}
+          />
+        </div>
+
+        <button
+          type="button"
+          className="details-toggle"
+          onClick={() => setShowDetails((prev) => !prev)}
+        >
+          {showDetails ? 'Hide details' : '+ Add more details'}
+        </button>
+
+        {showDetails && (
+          <div className="details-panel">
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="day-type">Day type</label>
+
+                <select
+                  id="day-type"
+                  name="dayType"
+                  value={formData.dayType}
+                  onChange={handleChange}
+                >
+                  <option value="normal">Normal</option>
+                  <option value="work">Work</option>
+                  <option value="travel">Travel</option>
+                  <option value="social">Social</option>
+                  <option value="rest">Rest day</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="flare-status">Flare status</label>
+
+                <select
+                  id="flare-status"
+                  name="flareStatus"
+                  value={formData.flareStatus}
+                  onChange={handleChange}
+                >
+                  <option value="none">None</option>
+                  <option value="mild">Mild</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="severe">Severe</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="blood-mucus">Blood / mucus</label>
+
+                <select
+                  id="blood-mucus"
+                  name="bloodMucus"
+                  value={formData.bloodMucus}
+                  onChange={handleChange}
+                >
+                  <option value="none">None</option>
+                  <option value="blood">Blood</option>
+                  <option value="mucus">Mucus</option>
+                  <option value="both">Blood and mucus</option>
+                </select>
+              </div>
+
+              <div className="form-group full-width">
+                <label htmlFor="key-foods">Key foods</label>
+
+                <textarea
+                  id="key-foods"
+                  name="keyFoods"
+                  rows="2"
+                  placeholder="e.g. oats, coffee, chicken, pasta"
+                  value={formData.keyFoods}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group full-width">
+                <label htmlFor="notes">Notes</label>
+
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="2"
+                  placeholder="Anything unusual today?"
+                  value={formData.notes}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="form-actions">
           <button type="submit" className="btn-primary">
-            Save Entry
+            Save today
           </button>
-          <button type="reset" className="btn-secondary">
-            Clear Form
+
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={resetForm}
+          >
+            Reset
           </button>
         </div>
       </form>
