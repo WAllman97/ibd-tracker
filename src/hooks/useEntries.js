@@ -1,119 +1,194 @@
-import { useState, useEffect } from 'react'
-
-/**
- * Custom Hook: useEntries
- * 
- * This hook manages all localStorage operations for your entries.
- * Think of it like the old JavaScript functions but as a React hook.
- * 
- * It handles:
- * - Reading entries from localStorage
- * - Adding new entries
- * - Deleting entries
- * - Clearing all entries
- * 
- * Hooks always start with "use" prefix (React convention)
- */
+import { useEffect, useMemo, useState } from 'react'
 
 const STORAGE_KEY = 'ibd_entries'
+const MAX_ENTRIES = 365
 
-// Class definition for creating new entry objects
-class SymptomEntry {
-  constructor(data) {
-    this.id = Date.now().toString() // Unique ID based on timestamp
-    this.date = data.date
-    this.bloating = parseInt(data.bloating) || 0
-    this.pain = parseInt(data.pain) || 0
-    this.stress = parseInt(data.stress) || 0
-    this.fatigue = parseInt(data.fatigue) || 0
-    this.stool = parseInt(data.stool) || 0
-    this.dayType = data.dayType || ''
-    this.flareStatus = data.flareStatus || ''
-    this.bloodMucus = data.bloodMucus || ''
-    this.keyFoods = data.keyFoods || ''
-    this.notes = data.notes || ''
-    this.createdAt = new Date().toISOString()
+function createId() {
+  return `${Date.now()}-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`
+}
+
+function toNumber(value, fallback = 0) {
+  const num = Number(value)
+  return Number.isFinite(num) ? num : fallback
+}
+
+function normaliseEntry(data) {
+  const now = new Date().toISOString()
+
+  return {
+    id: data.id || createId(),
+    date: data.date || new Date().toISOString().slice(0, 10),
+
+    bloating: toNumber(data.bloating),
+    pain: toNumber(data.pain),
+    stress: toNumber(data.stress),
+    fatigue: toNumber(data.fatigue),
+    stool: toNumber(data.stool),
+
+    dayType: data.dayType || '',
+    flareStatus: data.flareStatus || '',
+    bloodMucus: data.bloodMucus || '',
+    keyFoods: data.keyFoods || '',
+    notes: data.notes || '',
+
+    createdAt: data.createdAt || now,
+    updatedAt: now,
   }
 }
 
-/**
- * Helper functions for localStorage operations
- */
+function validateEntry(entry) {
+  const errors = {}
+
+  if (!entry.date) {
+    errors.date = 'Date is required'
+  }
+
+  const scoreFields = ['bloating', 'pain', 'stress', 'fatigue']
+
+  scoreFields.forEach((field) => {
+    if (entry[field] < 0 || entry[field] > 10) {
+      errors[field] = `${field} must be between 0 and 10`
+    }
+  })
+
+  if (entry.stool < 1 || entry.stool > 7) {
+    errors.stool = 'Stool score must be between 1 and 7'
+  }
+
+  return errors
+}
+
+function sortEntries(entries) {
+  return [...entries].sort((a, b) => new Date(b.date) - new Date(a.date))
+}
 
 function getEntriesFromStorage() {
-  const data = localStorage.getItem(STORAGE_KEY)
-  return data ? JSON.parse(data) : []
+  try {
+    const data = localStorage.getItem(STORAGE_KEY)
+    if (!data) return []
+
+    const parsed = JSON.parse(data)
+    if (!Array.isArray(parsed)) return []
+
+    return sortEntries(parsed.map(normaliseEntry))
+  } catch (error) {
+    console.error('Failed to load entries from localStorage:', error)
+    return []
+  }
 }
 
 function saveEntriesToStorage(entries) {
-  // Keep only last 365 entries
-  const entriesToSave = entries.slice(-365)
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entriesToSave))
+  try {
+    const entriesToSave = sortEntries(entries).slice(0, MAX_ENTRIES)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entriesToSave))
+  } catch (error) {
+    console.error('Failed to save entries to localStorage:', error)
+  }
 }
 
-/**
- * Main hook function
- * Returns: object with entries array and functions to modify it
- */
 export function useEntries() {
-  // State: array of entries currently in memory
   const [entries, setEntries] = useState([])
+  const [error, setError] = useState(null)
 
-  // useEffect: Run once when component mounts (loads page)
-  // Load entries from localStorage into React state
   useEffect(() => {
-    const storedEntries = getEntriesFromStorage()
-    setEntries(storedEntries)
-  }, []) // Empty dependency array = run only once on mount
+    setEntries(getEntriesFromStorage())
+  }, [])
 
-  /**
-   * Add new entry
-   * - Create entry object
-   * - Check for duplicate date
-   * - Update state and localStorage
-   */
   const addEntry = (entryData) => {
-    const newEntry = new SymptomEntry(entryData)
-    
-    // Check if entry already exists for this date
-    const existingIndex = entries.findIndex(e => e.date === newEntry.date)
-    
+    const newEntry = normaliseEntry(entryData)
+    const validationErrors = validateEntry(newEntry)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors)
+      return { success: false, errors: validationErrors }
+    }
+
+    const existingIndex = entries.findIndex((entry) => entry.date === newEntry.date)
+
     let updatedEntries
+
     if (existingIndex !== -1) {
-      // Replace existing entry
       updatedEntries = [...entries]
-      updatedEntries[existingIndex] = newEntry
+      updatedEntries[existingIndex] = {
+        ...newEntry,
+        id: entries[existingIndex].id,
+        createdAt: entries[existingIndex].createdAt,
+        updatedAt: new Date().toISOString(),
+      }
     } else {
-      // Add new entry
       updatedEntries = [...entries, newEntry]
     }
-    
-    setEntries(updatedEntries)
-    saveEntriesToStorage(updatedEntries)
+
+    const sorted = sortEntries(updatedEntries)
+
+    setEntries(sorted)
+    saveEntriesToStorage(sorted)
+    setError(null)
+
+    return { success: true, entry: newEntry }
   }
 
-  /**
-   * Remove entry by ID
-   */
+  const editEntry = (entryId, updates) => {
+    const existingEntry = entries.find((entry) => entry.id === entryId)
+
+    if (!existingEntry) {
+      const errors = { id: 'Entry not found' }
+      setError(errors)
+      return { success: false, errors }
+    }
+
+    const updatedEntry = normaliseEntry({
+      ...existingEntry,
+      ...updates,
+      id: existingEntry.id,
+      createdAt: existingEntry.createdAt,
+    })
+
+    const validationErrors = validateEntry(updatedEntry)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors)
+      return { success: false, errors: validationErrors }
+    }
+
+    const updatedEntries = sortEntries(
+      entries.map((entry) => (entry.id === entryId ? updatedEntry : entry))
+    )
+
+    setEntries(updatedEntries)
+    saveEntriesToStorage(updatedEntries)
+    setError(null)
+
+    return { success: true, entry: updatedEntry }
+  }
+
   const removeEntry = (entryId) => {
-    const updatedEntries = entries.filter(e => e.id !== entryId)
+    const updatedEntries = entries.filter((entry) => entry.id !== entryId)
+
     setEntries(updatedEntries)
     saveEntriesToStorage(updatedEntries)
   }
 
-  /**
-   * Clear all entries
-   */
   const clearAll = () => {
     setEntries([])
     localStorage.removeItem(STORAGE_KEY)
+    setError(null)
   }
 
-  // Return object with state and functions
+  const entriesByDate = useMemo(() => {
+    return entries.reduce((acc, entry) => {
+      acc[entry.date] = entry
+      return acc
+    }, {})
+  }, [entries])
+
   return {
     entries,
+    entriesByDate,
+    error,
     addEntry,
+    editEntry,
     removeEntry,
-    clearAll
+    clearAll,
   }
 }
