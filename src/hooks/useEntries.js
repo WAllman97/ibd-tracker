@@ -1,194 +1,352 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'ibd_entries'
-const MAX_ENTRIES = 365
-
-function createId() {
-  return `${Date.now()}-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`
+const initialForm = {
+  date: '',
+  pain: 0,
+  bloating: 0,
+  fatigue: 0,
+  stress: 0,
+  stool: 4,
+  dayType: '',
+  flareStatus: 'none',
+  bloodMucus: 'none',
+  keyFoods: '',
+  notes: '',
 }
 
-function toNumber(value, fallback = 0) {
-  const num = Number(value)
-  return Number.isFinite(num) ? num : fallback
+function getToday() {
+  return new Date().toISOString().split('T')[0]
 }
 
-function normaliseEntry(data) {
-  const now = new Date().toISOString()
-
-  return {
-    id: data.id || createId(),
-    date: data.date || new Date().toISOString().slice(0, 10),
-
-    bloating: toNumber(data.bloating),
-    pain: toNumber(data.pain),
-    stress: toNumber(data.stress),
-    fatigue: toNumber(data.fatigue),
-    stool: toNumber(data.stool),
-
-    dayType: data.dayType || '',
-    flareStatus: data.flareStatus || '',
-    bloodMucus: data.bloodMucus || '',
-    keyFoods: data.keyFoods || '',
-    notes: data.notes || '',
-
-    createdAt: data.createdAt || now,
-    updatedAt: now,
-  }
+function getDefaultDayType(dateStr) {
+  const date = new Date(dateStr)
+  const day = date.getDay()
+  return day >= 1 && day <= 5 ? 'work' : 'normal'
 }
 
-function validateEntry(entry) {
-  const errors = {}
+function ScoreSlider({ label, name, value, onChange, leftLabel, rightLabel }) {
+  return (
+    <div className="quick-metric">
+      <div className="metric-topline">
+        <label htmlFor={name}>{label}</label>
+        <strong>{value}/10</strong>
+      </div>
 
-  if (!entry.date) {
-    errors.date = 'Date is required'
-  }
+      <input
+        id={name}
+        name={name}
+        type="range"
+        min="0"
+        max="10"
+        value={value}
+        onChange={onChange}
+      />
 
-  const scoreFields = ['bloating', 'pain', 'stress', 'fatigue']
-
-  scoreFields.forEach((field) => {
-    if (entry[field] < 0 || entry[field] > 10) {
-      errors[field] = `${field} must be between 0 and 10`
-    }
-  })
-
-  if (entry.stool < 1 || entry.stool > 7) {
-    errors.stool = 'Stool score must be between 1 and 7'
-  }
-
-  return errors
+      <div className="metric-scale">
+        <span>{leftLabel || 'Low'}</span>
+        <span>{rightLabel || 'High'}</span>
+      </div>
+    </div>
+  )
 }
 
-function sortEntries(entries) {
-  return [...entries].sort((a, b) => new Date(b.date) - new Date(a.date))
+function StoolSelector({ value, onChange }) {
+  const scores = [1, 2, 3, 4, 5, 6, 7]
+
+  return (
+    <div className="quick-metric">
+      <div className="metric-topline">
+        <label>Stool score</label>
+        <strong>{value}/7</strong>
+      </div>
+
+      <div className="stool-selector">
+        {scores.map((score) => (
+          <button
+            key={score}
+            type="button"
+            className={Number(value) === score ? 'selected' : ''}
+            onClick={() =>
+              onChange({
+                target: {
+                  name: 'stool',
+                  value: score,
+                },
+              })
+            }
+          >
+            {score}
+          </button>
+        ))}
+      </div>
+
+      <div className="metric-scale">
+        <span>Hard</span>
+        <span>Loose</span>
+      </div>
+    </div>
+  )
 }
 
-function getEntriesFromStorage() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (!data) return []
-
-    const parsed = JSON.parse(data)
-    if (!Array.isArray(parsed)) return []
-
-    return sortEntries(parsed.map(normaliseEntry))
-  } catch (error) {
-    console.error('Failed to load entries from localStorage:', error)
-    return []
-  }
-}
-
-function saveEntriesToStorage(entries) {
-  try {
-    const entriesToSave = sortEntries(entries).slice(0, MAX_ENTRIES)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entriesToSave))
-  } catch (error) {
-    console.error('Failed to save entries to localStorage:', error)
-  }
-}
-
-export function useEntries() {
-  const [entries, setEntries] = useState([])
-  const [error, setError] = useState(null)
+function SymptomForm({ onAddEntry }) {
+  const [formData, setFormData] = useState(initialForm)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
-    setEntries(getEntriesFromStorage())
+    const today = getToday()
+
+    setFormData((prev) => ({
+      ...prev,
+      date: today,
+      dayType: getDefaultDayType(today),
+    }))
   }, [])
 
-  const addEntry = (entryData) => {
-    const newEntry = normaliseEntry(entryData)
-    const validationErrors = validateEntry(newEntry)
+  function handleChange(e) {
+    const { name, value } = e.target
 
-    if (Object.keys(validationErrors).length > 0) {
-      setError(validationErrors)
-      return { success: false, errors: validationErrors }
-    }
-
-    const existingIndex = entries.findIndex((entry) => entry.date === newEntry.date)
-
-    let updatedEntries
-
-    if (existingIndex !== -1) {
-      updatedEntries = [...entries]
-      updatedEntries[existingIndex] = {
-        ...newEntry,
-        id: entries[existingIndex].id,
-        createdAt: entries[existingIndex].createdAt,
-        updatedAt: new Date().toISOString(),
-      }
-    } else {
-      updatedEntries = [...entries, newEntry]
-    }
-
-    const sorted = sortEntries(updatedEntries)
-
-    setEntries(sorted)
-    saveEntriesToStorage(sorted)
-    setError(null)
-
-    return { success: true, entry: newEntry }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  const editEntry = (entryId, updates) => {
-    const existingEntry = entries.find((entry) => entry.id === entryId)
+  function handleDateChange(e) {
+    const date = e.target.value
 
-    if (!existingEntry) {
-      const errors = { id: 'Entry not found' }
-      setError(errors)
-      return { success: false, errors }
+    setFormData((prev) => ({
+      ...prev,
+      date,
+      dayType: getDefaultDayType(date),
+    }))
+  }
+
+  function getQuickRead() {
+    const total =
+      Number(formData.pain) +
+      Number(formData.bloating) +
+      Number(formData.fatigue) +
+      Number(formData.stress)
+
+    if (formData.bloodMucus !== 'none' || formData.flareStatus === 'severe') {
+      return {
+        label: 'Rough day',
+        className: 'read-bad',
+      }
     }
 
-    const updatedEntry = normaliseEntry({
-      ...existingEntry,
-      ...updates,
-      id: existingEntry.id,
-      createdAt: existingEntry.createdAt,
+    if (total >= 22 || formData.flareStatus === 'moderate') {
+      return {
+        label: 'Watch closely',
+        className: 'read-amber',
+      }
+    }
+
+    return {
+      label: 'Stable day',
+      className: 'read-good',
+    }
+  }
+
+  function resetForm() {
+    const today = getToday()
+
+    setFormData({
+      ...initialForm,
+      date: today,
+      dayType: getDefaultDayType(today),
     })
 
-    const validationErrors = validateEntry(updatedEntry)
+    setShowDetails(false)
+  }
 
-    if (Object.keys(validationErrors).length > 0) {
-      setError(validationErrors)
-      return { success: false, errors: validationErrors }
+  function handleSubmit(e) {
+    e.preventDefault()
+
+    if (!formData.date) {
+      alert('Please select a date')
+      return
     }
 
-    const updatedEntries = sortEntries(
-      entries.map((entry) => (entry.id === entryId ? updatedEntry : entry))
-    )
+    const result = onAddEntry(formData)
 
-    setEntries(updatedEntries)
-    saveEntriesToStorage(updatedEntries)
-    setError(null)
+    if (result && result.success === false) {
+      alert('Please check the form before saving.')
+      return
+    }
 
-    return { success: true, entry: updatedEntry }
+    resetForm()
+    setShowSuccess(true)
+    setTimeout(() => setShowSuccess(false), 2500)
   }
 
-  const removeEntry = (entryId) => {
-    const updatedEntries = entries.filter((entry) => entry.id !== entryId)
+  const quickRead = getQuickRead()
 
-    setEntries(updatedEntries)
-    saveEntriesToStorage(updatedEntries)
-  }
+  return (
+    <>
+      {showSuccess && <div className="toast">✓ Entry saved</div>}
 
-  const clearAll = () => {
-    setEntries([])
-    localStorage.removeItem(STORAGE_KEY)
-    setError(null)
-  }
+      <form onSubmit={handleSubmit} className="symptom-form">
+        <div className="form-intro">
+          <div>
+            <p className="eyebrow">Daily check-in</p>
+            <h3>How are you feeling today?</h3>
+          </div>
 
-  const entriesByDate = useMemo(() => {
-    return entries.reduce((acc, entry) => {
-      acc[entry.date] = entry
-      return acc
-    }, {})
-  }, [entries])
+          <div className={`quick-read ${quickRead.className}`}>
+            {quickRead.label}
+          </div>
+        </div>
 
-  return {
-    entries,
-    entriesByDate,
-    error,
-    addEntry,
-    editEntry,
-    removeEntry,
-    clearAll,
-  }
+        <div className="form-group">
+          <label htmlFor="date">Date</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleDateChange}
+            required
+          />
+        </div>
+
+        <div className="quick-grid">
+          <ScoreSlider
+            label="Pain"
+            name="pain"
+            value={formData.pain}
+            onChange={handleChange}
+            leftLabel="None"
+            rightLabel="Severe"
+          />
+
+          <ScoreSlider
+            label="Bloating"
+            name="bloating"
+            value={formData.bloating}
+            onChange={handleChange}
+            leftLabel="None"
+            rightLabel="Severe"
+          />
+
+          <ScoreSlider
+            label="Fatigue"
+            name="fatigue"
+            value={formData.fatigue}
+            onChange={handleChange}
+            leftLabel="Fresh"
+            rightLabel="Exhausted"
+          />
+
+          <ScoreSlider
+            label="Stress"
+            name="stress"
+            value={formData.stress}
+            onChange={handleChange}
+            leftLabel="Calm"
+            rightLabel="High"
+          />
+
+          <StoolSelector value={formData.stool} onChange={handleChange} />
+        </div>
+
+        <button
+          type="button"
+          className="details-toggle"
+          onClick={() => setShowDetails((prev) => !prev)}
+        >
+          {showDetails ? 'Hide details' : '+ Add more details'}
+        </button>
+
+        {showDetails && (
+          <div className="details-panel">
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="day-type">Day type</label>
+                <select
+                  id="day-type"
+                  name="dayType"
+                  value={formData.dayType}
+                  onChange={handleChange}
+                >
+                  <option value="normal">Normal</option>
+                  <option value="work">Work</option>
+                  <option value="travel">Travel</option>
+                  <option value="social">Social</option>
+                  <option value="rest">Rest day</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="flare-status">Flare status</label>
+                <select
+                  id="flare-status"
+                  name="flareStatus"
+                  value={formData.flareStatus}
+                  onChange={handleChange}
+                >
+                  <option value="none">None</option>
+                  <option value="mild">Mild</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="severe">Severe</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="blood-mucus">Blood / mucus</label>
+                <select
+                  id="blood-mucus"
+                  name="bloodMucus"
+                  value={formData.bloodMucus}
+                  onChange={handleChange}
+                >
+                  <option value="none">None</option>
+                  <option value="blood">Blood</option>
+                  <option value="mucus">Mucus</option>
+                  <option value="both">Blood and mucus</option>
+                </select>
+              </div>
+
+              <div className="form-group full-width">
+                <label htmlFor="key-foods">Key foods</label>
+                <textarea
+                  id="key-foods"
+                  name="keyFoods"
+                  rows="2"
+                  placeholder="e.g. oats, coffee, chicken, pasta"
+                  value={formData.keyFoods}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-group full-width">
+                <label htmlFor="notes">Notes</label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="2"
+                  placeholder="Anything unusual today?"
+                  value={formData.notes}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="form-actions">
+          <button type="submit" className="btn-primary">
+            Save today
+          </button>
+
+          <button type="button" className="btn-secondary" onClick={resetForm}>
+            Reset
+          </button>
+        </div>
+      </form>
+    </>
+  )
 }
+
+export default SymptomForm
