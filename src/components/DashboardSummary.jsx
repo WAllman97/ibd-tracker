@@ -5,18 +5,6 @@ import { calculateRollingAverage } from '../utils/calculateAverages'
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
 
-  function getAveragePain() {
-    if (safeEntries.length === 0) return 0
-    const total = safeEntries.reduce((sum, e) => sum + Number(e.pain || 0), 0)
-    return (total / safeEntries.length).toFixed(1)
-  }
-
-  function getAverageBloating() {
-    if (safeEntries.length === 0) return 0
-    const total = safeEntries.reduce((sum, e) => sum + Number(e.bloating || 0), 0)
-    return (total / safeEntries.length).toFixed(1)
-  }
-
   function getLatestEntry() {
     if (safeEntries.length === 0) return null
     return [...safeEntries].sort((a, b) => new Date(b.date) - new Date(a.date))[0]
