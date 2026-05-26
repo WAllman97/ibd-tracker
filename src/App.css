@@ -412,6 +412,41 @@ button {
   font-weight: 700;
   color: #245953;
 }
+/* ============================================================================
+   Trend Cards
+   ============================================================================ */
+
+.trend-card {
+  border: 1px solid #e5e7eb;
+}
+
+.trend-card-improving {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.trend-card-stable {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.trend-card-worsening {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.trend-improving {
+  color: #166534;
+}
+
+.trend-stable {
+  color: #245953;
+}
+
+.trend-worsening {
+  color: #991b1b;
+}
+
 .summary-card-wide {
   grid-column: 1 / -1;
   text-align: left;
