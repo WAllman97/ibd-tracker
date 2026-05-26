@@ -28,6 +28,7 @@ function normaliseEntry(data) {
     bloodMucus: data.bloodMucus || 'none',
     keyFoods: data.keyFoods || '',
     notes: data.notes || '',
+    triggers: Array.isArray(data.triggers) ? data.triggers : [],
     createdAt: data.createdAt || now,
     updatedAt: now,
   }
