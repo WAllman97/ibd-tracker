@@ -64,7 +64,7 @@ function App() {
         {/* Daily symptom entry form */}
         <section className="card">
           <h2>Daily Check-In</h2>
-          <SymptomForm onAddEntry={handleAddEntry} />
+          <SymptomForm entries={entries} onAddEntry={handleAddEntry} />
         </section>
 
         {/* Summary dashboard cards - shows stats at a glance */}
