@@ -149,3 +149,4 @@ function DashboardSummary({ entries }) {
     </section>
     )
     }
+export default DashboardSummary
