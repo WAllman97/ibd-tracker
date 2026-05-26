@@ -53,29 +53,13 @@ function DashboardSummary({ entries }) {
   const avgBloating = calculateRollingAverage(safeEntries, 'bloating', 7)
   const latestFlare = getLatestFlareStatus()
   const trend = detectTrend(safeEntries)
-  const recentFlares = getRecentFlareDays()
-  const currentStreak = calculateCurrentStreak(safeEntries)
-  const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
   const weeklySummary = generateWeeklySummary(safeEntries)
+  const recentFlares = getRecentFlareDays()
+  const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
+  const currentStreak = calculateCurrentStreak(safeEntries)
 
   return (
     <section className="dashboard-summary">
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>7-Day Avg Pain</h3>
-          <div className="summary-value">{avgPain}</div>
-          <p className="summary-label">out of 10</p>
-        </div>
-      </div>
-
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>7-Day Avg Bloating</h3>
-          <div className="summary-value">{avgBloating}</div>
-          <p className="summary-label">out of 10</p>
-        </div>
-      </div>
-
       <div className="summary-card">
         <div className="summary-card-content">
           <h3>Current Flare Risk</h3>
@@ -98,21 +82,35 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
 
-      <div className="summary-card">
+      <div className="summary-card summary-card-wide weekly-summary-card">
         <div className="summary-card-content">
-          <h3>Risk Days</h3>
-          <div className="summary-value">{recentFlares}</div>
-          <p className="summary-label">in past 7 days</p>
+          <p className="summary-eyebrow">Weekly Insight</p>
+          <h3>Health Summary</h3>
+          <p className="weekly-summary-text">{weeklySummary}</p>
         </div>
       </div>
 
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Current Streak</h3>
-          <div className="summary-value">{currentStreak}</div>
-          <p className="summary-label">
-            {currentStreak === 1 ? 'day logged' : 'days logged'}
-          </p>
+          <h3>7-Day Avg Pain</h3>
+          <div className="summary-value">{avgPain}</div>
+          <p className="summary-label">out of 10</p>
+        </div>
+      </div>
+
+      <div className="summary-card">
+        <div className="summary-card-content">
+          <h3>7-Day Avg Bloating</h3>
+          <div className="summary-value">{avgBloating}</div>
+          <p className="summary-label">out of 10</p>
+        </div>
+      </div>
+
+      <div className="summary-card">
+        <div className="summary-card-content">
+          <h3>Risk Days</h3>
+          <div className="summary-value">{recentFlares}</div>
+          <p className="summary-label">in past 7 days</p>
         </div>
       </div>
 
@@ -130,17 +128,19 @@ function DashboardSummary({ entries }) {
 
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Total Entries</h3>
-          <div className="summary-value">{safeEntries.length}</div>
-          <p className="summary-label">tracked</p>
+          <h3>Current Streak</h3>
+          <div className="summary-value">{currentStreak}</div>
+          <p className="summary-label">
+            {currentStreak === 1 ? 'day logged' : 'days logged'}
+          </p>
         </div>
       </div>
 
-      <div className="summary-card summary-card-wide weekly-summary-card">
+      <div className="summary-card">
         <div className="summary-card-content">
-          <p className="summary-eyebrow">Weekly Insight</p>
-          <h3>Health Summary</h3>
-          <p className="weekly-summary-text">{weeklySummary}</p>
+          <h3>Total Entries</h3>
+          <div className="summary-value">{safeEntries.length}</div>
+          <p className="summary-label">tracked</p>
         </div>
       </div>
     </section>
