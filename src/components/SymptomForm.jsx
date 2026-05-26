@@ -96,7 +96,7 @@ function StoolSelector({ value, onChange }) {
   )
 }
 
-function SymptomForm({ onAddEntry }) {
+function SymptomForm({ entries, onAddEntry }) {
   const [formData, setFormData] = useState(initialForm)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
@@ -130,6 +130,31 @@ function SymptomForm({ onAddEntry }) {
     }))
   }
 
+function duplicateYesterday() {
+  if (!entries.length) {
+    alert('No previous entries found')
+    return
+  }
+
+  const latestEntry = entries[0]
+
+  const today = getToday()
+
+  const {
+    id,
+    createdAt,
+    updatedAt,
+    ...entryWithoutMeta
+  } = latestEntry
+
+  setFormData({
+    ...entryWithoutMeta,
+    date: today,
+  })
+
+  setShowDetails(true)
+}
+  
   function getQuickRead() {
     const total =
       Number(formData.pain) +
@@ -361,6 +386,13 @@ function SymptomForm({ onAddEntry }) {
 
         <div className="form-actions">
           <button type="submit" className="btn-primary">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={duplicateYesterday}
+            >
+              Duplicate Yesterday
+            </button>
             Save today
           </button>
 
