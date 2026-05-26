@@ -101,9 +101,9 @@ function DashboardSummary({ entries }) {
             {triggerInsight.topTrigger}
           </div>
       
-          <p className="summary-label">
-            {triggerInsight.message}
-          </p>
+        <p className={`summary-label trigger-confidence-${triggerInsight.confidence}`}>
+          {triggerInsight.message}
+        </p>
         </div>
       </div>
 
