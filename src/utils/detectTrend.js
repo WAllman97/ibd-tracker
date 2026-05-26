@@ -27,7 +27,7 @@ export function detectTrend(entries) {
 
   if (previousEntries.length < 3) {
     return {
-      label: 'Collecting trend',
+      label: 'More data needed',
       status: 'neutral',
     }
   }
