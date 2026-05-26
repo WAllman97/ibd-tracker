@@ -1,5 +1,6 @@
 import { calculateFlareRiskScore } from '../utils/flareCalculations'
 import { calculateCurrentStreak } from '../utils/calculateStreak'
+import { calculateRollingAverage } from '../utils/calculateAverages'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -56,8 +57,8 @@ function DashboardSummary({ entries }) {
       .length
   }
 
-  const avgPain = getAveragePain()
-  const avgBloating = getAverageBloating()
+  const avgPain = calculateRollingAverage(safeEntries, 'pain', 7)
+  const avgBloating = calculateRollingAverage(safeEntries, 'bloating', 7)
   const latestFlare = getLatestFlareStatus()
   const trend = getTrend()
   const recentFlares = getRecentFlareDays()
@@ -67,7 +68,7 @@ function DashboardSummary({ entries }) {
     <section className="dashboard-summary">
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Avg Pain</h3>
+          <h3>7-Day Avg Pain</h3>
           <div className="summary-value">{avgPain}</div>
           <p className="summary-label">out of 10</p>
         </div>
@@ -75,7 +76,7 @@ function DashboardSummary({ entries }) {
 
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Avg Bloating</h3>
+          <h3>7-Day Avg Bloating</h3>
           <div className="summary-value">{avgBloating}</div>
           <p className="summary-label">out of 10</p>
         </div>
