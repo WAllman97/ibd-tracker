@@ -97,6 +97,17 @@ body {
   color: #163832;
 }
 
+.section-heading h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #163832;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
 .eyebrow {
   margin: 0;
   font-size: 12px;
