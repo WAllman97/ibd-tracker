@@ -1,43 +1,27 @@
-/**
- * Calculate flare risk score
- * 
- * Higher score = higher likelihood of flare activity
- */
-
 export function calculateFlareRiskScore(entry) {
   if (!entry) return 0
 
   let score = 0
 
-  // Pain weighting
-  score += Number(entry.pain || 0) * 0.35
-
-  // Bloating weighting
+  score += Number(entry.pain || 0) * 0.3
   score += Number(entry.bloating || 0) * 0.2
-
-  // Fatigue weighting
   score += Number(entry.fatigue || 0) * 0.2
+  score += Number(entry.stress || 0) * 0.1
 
-  // Stool frequency weighting
-  score += Number(entry.stoolCount || 0) * 0.15
+  const stool = Number(entry.stool || 4)
+  const stoolDeviation = Math.abs(stool - 4)
+  score += stoolDeviation * 0.5
 
-  // Blood in stool weighting
-  if (entry.blood === true) {
-    score += 2
-  }
+  if (entry.bloodMucus === 'blood') score += 1.5
+  if (entry.bloodMucus === 'mucus') score += 1
+  if (entry.bloodMucus === 'both') score += 2
 
-  // Urgency weighting
-  if (entry.urgency === true) {
-    score += 1.5
-  }
+  if (entry.flareStatus === 'mild') score += 1
+  if (entry.flareStatus === 'moderate') score += 2
+  if (entry.flareStatus === 'severe') score += 3
 
-  // Normalize to roughly 0–10 scale
-  return Math.min(score, 10).toFixed(1)
+  return Number(Math.min(score, 10).toFixed(1))
 }
-
-/**
- * Convert numeric score into risk level
- */
 
 export function getFlareRiskLevel(score) {
   const numericScore = Number(score)
@@ -48,38 +32,66 @@ export function getFlareRiskLevel(score) {
   return 'low'
 }
 
-/**
- * Warning alert helper
- */
+export function getFlareRiskLabel(score) {
+  const level = getFlareRiskLevel(score)
+
+  if (level === 'high') return 'Heightened flare risk'
+  if (level === 'moderate') return 'Elevated symptoms'
+
+  return 'Symptoms stable'
+}
+
+export function getFlareRiskExplanation(entry) {
+  if (!entry) return ''
+
+  const reasons = []
+
+  if (Number(entry.pain || 0) >= 7) reasons.push('pain is elevated')
+  if (Number(entry.bloating || 0) >= 7) reasons.push('bloating is elevated')
+  if (Number(entry.fatigue || 0) >= 7) reasons.push('fatigue is elevated')
+  if (Number(entry.stress || 0) >= 7) reasons.push('stress is elevated')
+
+  if (entry.bloodMucus === 'blood') reasons.push('blood was recorded')
+  if (entry.bloodMucus === 'mucus') reasons.push('mucus was recorded')
+  if (entry.bloodMucus === 'both') reasons.push('blood and mucus were recorded')
+
+  if (entry.flareStatus === 'moderate') reasons.push('flare status is marked moderate')
+  if (entry.flareStatus === 'severe') reasons.push('flare status is marked severe')
+
+  if (reasons.length === 0) {
+    return 'No major warning signs recorded today.'
+  }
+
+  return `Main factors: ${reasons.join(', ')}.`
+}
 
 export function getWarningMessage(entry) {
   if (!entry) return null
 
   const score = calculateFlareRiskScore(entry)
   const level = getFlareRiskLevel(score)
+  const label = getFlareRiskLabel(score)
+  const explanation = getFlareRiskExplanation(entry)
 
   if (level === 'high') {
     return {
-      level: 'high',
-      title: 'High flare risk',
-      message:
-        'Your symptoms appear elevated today. Monitor closely and consider contacting your clinician if symptoms worsen.'
+      level,
+      title: label,
+      message: `${explanation} Monitor symptoms closely and consider contacting your clinician if symptoms worsen.`,
     }
   }
 
   if (level === 'moderate') {
     return {
-      level: 'moderate',
-      title: 'Moderate flare risk',
-      message:
-        'Some symptoms are elevated. Continue monitoring over the next few days.'
+      level,
+      title: label,
+      message: `${explanation} Continue tracking over the next few days.`,
     }
   }
 
   return {
-    level: 'low',
-    title: 'Stable day',
-    message:
-      'Your symptoms appear relatively stable today.'
+    level,
+    title: label,
+    message: explanation,
   }
 }
