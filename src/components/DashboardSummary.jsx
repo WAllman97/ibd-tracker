@@ -88,12 +88,20 @@ function DashboardSummary({ entries }) {
 
       <div className="summary-card">
         <div className="summary-card-content">
+      <div className={`summary-card trend-card trend-card-${trend.status}`}>
+        <div className="summary-card-content">
           <h3>Trend</h3>
+      
           <div className={`summary-value trend-${trend.status}`}>
+            {trend.status === 'improving' && '↓ '}
+            {trend.status === 'stable' && '→ '}
+            {trend.status === 'worsening' && '↑ '}
             {trend.label}
-          </div>
-          <p className="summary-label">recent vs previous</p>
-        </div>
+    </div>
+
+    <p className="summary-label">recent vs previous</p>
+  </div>
+</div>
       </div>
 
       <div className="summary-card">
