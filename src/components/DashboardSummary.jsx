@@ -23,20 +23,6 @@ function DashboardSummary({ entries }) {
     return 'Low'
   }
 
-  function getTrend() {
-    if (safeEntries.length < 2) return 'stable'
-
-    const sorted = [...safeEntries].sort((a, b) => new Date(a.date) - new Date(b.date))
-    const recent = sorted.slice(-7)
-
-    if (recent.length < 2) return 'stable'
-
-    const firstScore = calculateFlareRiskScore(recent[0])
-    const lastScore = calculateFlareRiskScore(recent[recent.length - 1])
-
-    return lastScore > firstScore + 1 ? 'rising' : 'stable'
-  }
-
   function getRecentFlareDays() {
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - 7)
