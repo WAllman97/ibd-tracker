@@ -167,20 +167,20 @@ function duplicateYesterday() {
       formData.flareStatus === 'severe'
     ) {
       return {
-        label: 'Rough day',
+        label: 'Heightened flare risk',
         className: 'read-bad',
       }
     }
 
     if (total >= 22 || formData.flareStatus === 'moderate') {
       return {
-        label: 'Watch closely',
+        label: 'Elevated symptoms',
         className: 'read-amber',
       }
     }
 
     return {
-      label: 'Stable day',
+      label: 'Symptoms stable',
       className: 'read-good',
     }
   }
