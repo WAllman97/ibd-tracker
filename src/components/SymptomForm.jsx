@@ -12,7 +12,19 @@ const initialForm = {
   bloodMucus: 'none',
   keyFoods: '',
   notes: '',
+  triggers: [],
 }
+
+const triggerOptions = [
+  'Stress',
+  'Poor sleep',
+  'Alcohol',
+  'Dairy',
+  'Spicy food',
+  'Travel',
+  'Antibiotics',
+  'High fibre',
+]
 
 function getToday() {
   return new Date().toISOString().split('T')[0]
@@ -120,6 +132,19 @@ function SymptomForm({ entries, onAddEntry }) {
     }))
   }
 
+  function handleTriggerToggle(trigger) {
+  setFormData((prev) => {
+    const alreadySelected = prev.triggers.includes(trigger)
+
+    return {
+      ...prev,
+      triggers: alreadySelected
+        ? prev.triggers.filter((item) => item !== trigger)
+        : [...prev.triggers, trigger],
+    }
+  })
+}
+  
   function handleDateChange(e) {
     const date = e.target.value
 
@@ -368,6 +393,27 @@ function duplicateYesterday() {
                 />
               </div>
 
+          <div className="form-group full-width">
+            <label>Possible triggers</label>
+          
+            <div className="trigger-grid">
+              {triggerOptions.map((trigger) => (
+                <button
+                  key={trigger}
+                  type="button"
+                  className={
+                    formData.triggers.includes(trigger)
+                      ? 'trigger-chip selected'
+                      : 'trigger-chip'
+                  }
+                  onClick={() => handleTriggerToggle(trigger)}
+                >
+                  {trigger}
+                </button>
+              ))}
+            </div>
+          </div>
+              
               <div className="form-group full-width">
                 <label htmlFor="notes">Notes</label>
 
