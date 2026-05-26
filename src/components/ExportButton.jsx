@@ -35,6 +35,7 @@ function ExportButton({ entries }) {
       'Flare Status',
       'Blood/Mucus',
       'Key Foods',
+      'Triggers',
       'Notes',
       'Risk Score'
     ]
@@ -51,6 +52,7 @@ function ExportButton({ entries }) {
       e.flareStatus,
       e.bloodMucus,
       `"${e.keyFoods}"`, // Quote to handle commas
+      `"${Array.isArray(e.triggers) ? e.triggers.join('; ') : ''}"`,
       `"${e.notes}"`,
       calculateFlareRiskScore(e)
     ])
