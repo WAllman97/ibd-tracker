@@ -478,6 +478,57 @@ button {
   font-size: 12px;
   font-weight: 700;
 }
+/* ============================================================================
+   Score & Flare States
+   ============================================================================ */
+
+.score-low {
+  color: #166534;
+  font-weight: 700;
+}
+
+.score-medium {
+  color: #92400e;
+  font-weight: 700;
+}
+
+.score-high {
+  color: #991b1b;
+  font-weight: 700;
+}
+
+.flare-none,
+.flare-low {
+  background: #dcfce7;
+  color: #166534;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.flare-mild,
+.flare-moderate {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.flare-severe,
+.flare-high {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-block;
+}
 
 /* ============================================================================
    Footer
