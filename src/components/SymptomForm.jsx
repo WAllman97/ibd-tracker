@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { calculateFlareRiskScore, getFlareRiskLabel } from '../utils/flareCalculations'
 
 const initialForm = {
   date: '',
@@ -110,7 +111,7 @@ function StoolSelector({ value, onChange }) {
 
 function SymptomForm({ entries, onAddEntry }) {
   const [formData, setFormData] = useState(initialForm)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
@@ -251,20 +252,27 @@ function duplicateYesterday() {
       return
     }
 
+    const score = calculateFlareRiskScore(formData)
+    const label = getFlareRiskLabel(score)
+    
     resetForm()
-
-    setShowSuccess(true)
-
+    
+    setSuccessMessage(`✓ Entry saved — ${label}`)
+    
     setTimeout(() => {
-      setShowSuccess(false)
-    }, 2500)
+      setSuccessMessage('')
+    }, 3000)
   }
 
   const quickRead = getQuickRead()
 
   return (
     <>
-      {showSuccess && <div className="toast">✓ Entry saved</div>}
+      {successMessage && (
+        <div className="toast">
+          {successMessage}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="symptom-form">
         <div className="form-intro">
