@@ -116,7 +116,6 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
                   {entry.flareStatus || '—'}
                 </span>
               </td>
-              <td>
                 <td>{entry.stool}/7</td>              
               <td>
                 <div className="history-trigger-list">
