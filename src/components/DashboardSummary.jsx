@@ -128,14 +128,14 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
 
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>Total Entries</h3>
-          <div className="summary-value">{safeEntries.length}</div>
-          <p className="summary-label">tracked</p>
-        </div>
+    <div className="summary-card">
+      <div className="summary-card-content">
+        <h3>Total Entries</h3>
+        <div className="summary-value">{safeEntries.length}</div>
+        <p className="summary-label">tracked</p>
       </div>
-    </section>
+    </div>
+    
     <div className="summary-card summary-card-wide">
       <div className="summary-card-content">
         <h3>Weekly Summary</h3>
@@ -145,7 +145,7 @@ function DashboardSummary({ entries }) {
         </p>
       </div>
     </div>
-  )
-}
-
-export default DashboardSummary
+    
+    </section>
+    )
+    }
