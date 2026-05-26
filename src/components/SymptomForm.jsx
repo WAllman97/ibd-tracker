@@ -298,7 +298,11 @@ function duplicateYesterday() {
             required
           />
         </div>
-
+      <div className="section-heading">
+        <h4>Quick check-in</h4>
+        <p>Core daily symptoms — should take under a minute.</p>
+      </div>
+        
         <div className="quick-grid">
           <ScoreSlider
             label="Pain"
