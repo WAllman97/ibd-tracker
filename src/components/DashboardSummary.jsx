@@ -3,6 +3,7 @@ import { calculateCurrentStreak } from '../utils/calculateStreak'
 import { calculateRollingAverage } from '../utils/calculateAverages'
 import { calculateDaysSinceFlare } from '../utils/daysSinceFlare'
 import { detectTrend } from '../utils/detectTrend'
+import { generateWeeklySummary } from '../utils/generateWeeklySummary'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -56,6 +57,7 @@ function DashboardSummary({ entries }) {
   const recentFlares = getRecentFlareDays()
   const currentStreak = calculateCurrentStreak(safeEntries)
   const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
+  const weeklySummary = generateWeeklySummary(safeEntries)
 
   return (
     <section className="dashboard-summary">
@@ -134,6 +136,15 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
     </section>
+    <div className="summary-card summary-card-wide">
+      <div className="summary-card-content">
+        <h3>Weekly Summary</h3>
+    
+        <p className="weekly-summary-text">
+          {weeklySummary}
+        </p>
+      </div>
+    </div>
   )
 }
 
