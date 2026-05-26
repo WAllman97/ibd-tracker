@@ -9,23 +9,22 @@ function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
 
   if (safeEntries.length === 0) {
-  return (
-    <section className="dashboard-summary">
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>Getting Started</h3>
-          <div className="summary-value">0</div>
-          <p className="summary-label">
-            Log your first check-in to unlock symptom trends.
-          </p>
+    return (
+      <section className="dashboard-summary">
+        <div className="summary-card">
+          <div className="summary-card-content">
+            <h3>Getting Started</h3>
+            <div className="summary-value">0</div>
+            <p className="summary-label">
+              Log your first check-in to unlock symptom trends.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
-  )
-}
+      </section>
+    )
+  }
 
   function getLatestEntry() {
-    if (safeEntries.length === 0) return null
     return [...safeEntries].sort((a, b) => new Date(b.date) - new Date(a.date))[0]
   }
 
@@ -45,8 +44,8 @@ function DashboardSummary({ entries }) {
     cutoffDate.setDate(cutoffDate.getDate() - 7)
 
     return safeEntries
-      .filter((e) => new Date(e.date) >= cutoffDate)
-      .filter((e) => calculateFlareRiskScore(e) >= 4)
+      .filter((entry) => new Date(entry.date) >= cutoffDate)
+      .filter((entry) => calculateFlareRiskScore(entry) >= 4)
       .length
   }
 
@@ -86,22 +85,17 @@ function DashboardSummary({ entries }) {
         </div>
       </div>
 
-      <div className="summary-card">
-        <div className="summary-card-content">
       <div className={`summary-card trend-card trend-card-${trend.status}`}>
         <div className="summary-card-content">
           <h3>Trend</h3>
-      
           <div className={`summary-value trend-${trend.status}`}>
             {trend.status === 'improving' && '↓ '}
             {trend.status === 'stable' && '→ '}
             {trend.status === 'worsening' && '↑ '}
             {trend.label}
-    </div>
-
-    <p className="summary-label">recent vs previous</p>
-  </div>
-</div>
+          </div>
+          <p className="summary-label">recent vs previous</p>
+        </div>
       </div>
 
       <div className="summary-card">
@@ -125,38 +119,32 @@ function DashboardSummary({ entries }) {
       <div className="summary-card">
         <div className="summary-card-content">
           <h3>Days Since Flare</h3>
-      
           <div className="summary-value">
             {daysSinceFlare === null ? '—' : daysSinceFlare}
           </div>
-      
           <p className="summary-label">
             {daysSinceFlare === 1 ? 'day' : 'days'}
           </p>
         </div>
       </div>
 
-    <div className="summary-card">
-      <div className="summary-card-content">
-        <h3>Total Entries</h3>
-        <div className="summary-value">{safeEntries.length}</div>
-        <p className="summary-label">tracked</p>
+      <div className="summary-card">
+        <div className="summary-card-content">
+          <h3>Total Entries</h3>
+          <div className="summary-value">{safeEntries.length}</div>
+          <p className="summary-label">tracked</p>
+        </div>
       </div>
-    </div>
-    
-    <div className="summary-card summary-card-wide weekly-summary-card">
-      <div className="summary-card-content">
-        <p className="summary-eyebrow">Weekly Insight</p>
-        <h3>Health Summary</h3>
-    
-        <p className="weekly-summary-text">
-          {weeklySummary}
-        </p>
+
+      <div className="summary-card summary-card-wide weekly-summary-card">
+        <div className="summary-card-content">
+          <p className="summary-eyebrow">Weekly Insight</p>
+          <h3>Health Summary</h3>
+          <p className="weekly-summary-text">{weeklySummary}</p>
+        </div>
       </div>
-    </div>
-    
     </section>
-    )
-  }
-  
-  export default DashboardSummary
+  )
+}
+
+export default DashboardSummary
