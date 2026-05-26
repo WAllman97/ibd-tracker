@@ -117,10 +117,7 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
                 </span>
               </td>
               <td>
-                <td>{entry.stool}/7</td>
-
-              <td>{entry.stool}/7</td>
-              
+                <td>{entry.stool}/7</td>              
               <td>
                 <div className="history-trigger-list">
                   {entry.triggers && entry.triggers.length > 0 ? (
