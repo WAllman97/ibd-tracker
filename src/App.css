@@ -432,6 +432,18 @@ button {
   font-size: 24px;
   margin-top: 8px;
 }
+.trigger-confidence-low {
+  color: #6b7280;
+}
+
+.trigger-confidence-medium {
+  color: #92400e;
+}
+
+.trigger-confidence-high {
+  color: #991b1b;
+  font-weight: 600;
+}
 /* ============================================================================
    Trend Cards
    ============================================================================ */
