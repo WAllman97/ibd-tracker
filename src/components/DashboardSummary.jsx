@@ -1,6 +1,7 @@
 import { calculateFlareRiskScore } from '../utils/flareCalculations'
 import { calculateCurrentStreak } from '../utils/calculateStreak'
 import { calculateRollingAverage } from '../utils/calculateAverages'
+import { calculateDaysSinceFlare } from '../utils/daysSinceFlare'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -51,6 +52,7 @@ function DashboardSummary({ entries }) {
   const trend = getTrend()
   const recentFlares = getRecentFlareDays()
   const currentStreak = calculateCurrentStreak(safeEntries)
+  const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
 
   return (
     <section className="dashboard-summary">
@@ -102,6 +104,20 @@ function DashboardSummary({ entries }) {
           <div className="summary-value">{currentStreak}</div>
           <p className="summary-label">
             {currentStreak === 1 ? 'day logged' : 'days logged'}
+          </p>
+        </div>
+      </div>
+
+      <div className="summary-card">
+        <div className="summary-card-content">
+          <h3>Days Since Flare</h3>
+      
+          <div className="summary-value">
+            {daysSinceFlare === null ? '—' : daysSinceFlare}
+          </div>
+      
+          <p className="summary-label">
+            {daysSinceFlare === 1 ? 'day' : 'days'}
           </p>
         </div>
       </div>
