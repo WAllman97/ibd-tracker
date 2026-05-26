@@ -412,6 +412,31 @@ button {
   font-weight: 700;
   color: #245953;
 }
+.summary-card-wide {
+  grid-column: 1 / -1;
+  text-align: left;
+}
+
+.weekly-summary-card {
+  background: linear-gradient(135deg, #ffffff, #f0f7f5);
+  border: 1px solid #dbe7e4;
+}
+
+.summary-eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #245953;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.weekly-summary-text {
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+}
 
 /* ============================================================================
    Table
