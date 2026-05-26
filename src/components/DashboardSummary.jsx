@@ -1,4 +1,5 @@
 import { calculateFlareRiskScore } from '../utils/flareCalculations'
+import { calculateCurrentStreak } from '../utils/calculateStreak'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -60,6 +61,7 @@ function DashboardSummary({ entries }) {
   const latestFlare = getLatestFlareStatus()
   const trend = getTrend()
   const recentFlares = getRecentFlareDays()
+  const currentStreak = calculateCurrentStreak(safeEntries)
 
   return (
     <section className="dashboard-summary">
@@ -115,5 +117,15 @@ function DashboardSummary({ entries }) {
     </section>
   )
 }
+
+<div className="summary-card">
+  <div className="summary-card-content">
+    <h3>Current Streak</h3>
+    <div className="summary-value">{currentStreak}</div>
+    <p className="summary-label">
+      {currentStreak === 1 ? 'day logged' : 'days logged'}
+    </p>
+  </div>
+</div>
 
 export default DashboardSummary
