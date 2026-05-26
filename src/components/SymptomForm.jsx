@@ -7,12 +7,12 @@ const initialForm = {
   fatigue: 0,
   stress: 0,
   stool: 4,
+  triggers: [],
   dayType: '',
   flareStatus: 'none',
   bloodMucus: 'none',
   keyFoods: '',
   notes: '',
-  triggers: [],
 }
 
 const triggerOptions = [
