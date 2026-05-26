@@ -109,6 +109,16 @@ function DashboardSummary({ entries }) {
 
       <div className="summary-card">
         <div className="summary-card-content">
+          <h3>Current Streak</h3>
+          <div className="summary-value">{currentStreak}</div>
+          <p className="summary-label">
+            {currentStreak === 1 ? 'day logged' : 'days logged'}
+          </p>
+        </div>
+      </div>
+
+      <div className="summary-card">
+        <div className="summary-card-content">
           <h3>Total Entries</h3>
           <div className="summary-value">{safeEntries.length}</div>
           <p className="summary-label">tracked</p>
@@ -117,15 +127,5 @@ function DashboardSummary({ entries }) {
     </section>
   )
 }
-
-<div className="summary-card">
-  <div className="summary-card-content">
-    <h3>Current Streak</h3>
-    <div className="summary-value">{currentStreak}</div>
-    <p className="summary-label">
-      {currentStreak === 1 ? 'day logged' : 'days logged'}
-    </p>
-  </div>
-</div>
 
 export default DashboardSummary
