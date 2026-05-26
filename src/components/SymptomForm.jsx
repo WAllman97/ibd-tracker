@@ -385,17 +385,18 @@ function duplicateYesterday() {
         )}
 
         <div className="form-actions">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={duplicateYesterday}
+          >
+            Duplicate Yesterday
+          </button>
+        
           <button type="submit" className="btn-primary">
-            <button
-              type="button"
-              className="btn-secondary"
-              onClick={duplicateYesterday}
-            >
-              Duplicate Yesterday
-            </button>
             Save today
           </button>
-
+        
           <button
             type="button"
             className="btn-secondary"
