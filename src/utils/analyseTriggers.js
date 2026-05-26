@@ -1,12 +1,11 @@
 import { calculateFlareRiskScore } from './flareCalculations'
 
 export function analyseTriggers(entries) {
-  if (!Array.isArray(entries) || entries.length < 3) {
+  if (!Array.isArray(entries) || entries.length < 5) {
     return {
       topTrigger: 'More data needed',
-      count: 0,
-      hasPattern: false,
-      message: 'Log more check-ins to detect repeated trigger patterns.',
+      message: 'Log more check-ins to detect meaningful trigger patterns.',
+      confidence: 'low',
     }
   }
 
@@ -21,7 +20,7 @@ export function analyseTriggers(entries) {
       if (!triggerStats[trigger]) {
         triggerStats[trigger] = {
           count: 0,
-          elevatedCount: 0,
+          elevatedDays: 0,
           totalScore: 0,
         }
       }
@@ -30,59 +29,56 @@ export function analyseTriggers(entries) {
       triggerStats[trigger].totalScore += score
 
       if (score >= 4) {
-        triggerStats[trigger].elevatedCount += 1
+        triggerStats[trigger].elevatedDays += 1
       }
     })
   })
 
-  const analysedTriggers = Object.entries(triggerStats)
+  const rankedTriggers = Object.entries(triggerStats)
     .map(([trigger, stats]) => ({
       trigger,
       count: stats.count,
-      elevatedCount: stats.elevatedCount,
+      elevatedDays: stats.elevatedDays,
       averageScore: stats.totalScore / stats.count,
     }))
+    .filter((trigger) => trigger.count >= 2)
     .sort((a, b) => {
-      if (b.elevatedCount !== a.elevatedCount) {
-        return b.elevatedCount - a.elevatedCount
+      if (b.elevatedDays !== a.elevatedDays) {
+        return b.elevatedDays - a.elevatedDays
       }
 
       return b.averageScore - a.averageScore
     })
 
-  if (analysedTriggers.length === 0) {
+  if (rankedTriggers.length === 0) {
     return {
-      topTrigger: 'None logged',
-      count: 0,
-      hasPattern: false,
-      message: 'No triggers logged yet.',
+      topTrigger: 'No repeated triggers',
+      message: 'No repeated symptom-linked trigger patterns detected yet.',
+      confidence: 'low',
     }
   }
 
-  const top = analysedTriggers[0]
+  const top = rankedTriggers[0]
 
-  if (top.count < 2) {
+  if (top.elevatedDays === 0) {
     return {
       topTrigger: top.trigger,
-      count: top.count,
-      hasPattern: false,
-      message: `${top.trigger} has only appeared once. More data needed before treating it as a pattern.`,
+      message: `${top.trigger} appears repeatedly but has not coincided with elevated symptom days.`,
+      confidence: 'low',
     }
   }
 
-  if (top.elevatedCount === 0) {
+  if (top.elevatedDays >= 3) {
     return {
       topTrigger: top.trigger,
-      count: top.count,
-      hasPattern: false,
-      message: `${top.trigger} has appeared ${top.count} times, but not on elevated-risk days so far.`,
+      message: `${top.trigger} has repeatedly appeared on elevated symptom days.`,
+      confidence: 'high',
     }
   }
 
   return {
     topTrigger: top.trigger,
-    count: top.count,
-    hasPattern: true,
-    message: `${top.trigger} has appeared ${top.count} times, including ${top.elevatedCount} elevated-risk day${top.elevatedCount === 1 ? '' : 's'}. Worth monitoring.`,
+    message: `${top.trigger} may be associated with higher symptom days.`,
+    confidence: 'medium',
   }
 }
