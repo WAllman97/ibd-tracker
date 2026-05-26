@@ -78,9 +78,12 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
   // Empty state
   if (sortedEntries.length === 0) {
     return (
-      <div className="empty-state">
-        <p>No entries yet. Start tracking by submitting your first check-in above!</p>
-      </div>
+        <div className="empty-state">
+          <h3>No check-ins yet</h3>
+          <p>
+            Complete your first daily check-in to start building a symptom history.
+          </p>
+        </div>
     )
   }
 
