@@ -320,6 +320,27 @@ function duplicateYesterday() {
           />
         </div>
 
+        <div className="form-group full-width">
+          <label>Possible triggers</label>
+        
+          <div className="trigger-grid">
+            {triggerOptions.map((trigger) => (
+              <button
+                key={trigger}
+                type="button"
+                className={
+                  formData.triggers.includes(trigger)
+                    ? 'trigger-chip selected'
+                    : 'trigger-chip'
+                }
+                onClick={() => handleTriggerToggle(trigger)}
+              >
+                {trigger}
+              </button>
+            ))}
+          </div>
+        </div>
+        
         <button
           type="button"
           className="details-toggle"
@@ -393,26 +414,6 @@ function duplicateYesterday() {
                 />
               </div>
 
-          <div className="form-group full-width">
-            <label>Possible triggers</label>
-          
-            <div className="trigger-grid">
-              {triggerOptions.map((trigger) => (
-                <button
-                  key={trigger}
-                  type="button"
-                  className={
-                    formData.triggers.includes(trigger)
-                      ? 'trigger-chip selected'
-                      : 'trigger-chip'
-                  }
-                  onClick={() => handleTriggerToggle(trigger)}
-                >
-                  {trigger}
-                </button>
-              ))}
-            </div>
-          </div>
               
               <div className="form-group full-width">
                 <label htmlFor="notes">Notes</label>
