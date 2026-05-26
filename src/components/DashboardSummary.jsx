@@ -7,6 +7,22 @@ import { detectTrend } from '../utils/detectTrend'
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
 
+  if (safeEntries.length === 0) {
+  return (
+    <section className="dashboard-summary">
+      <div className="summary-card">
+        <div className="summary-card-content">
+          <h3>Getting Started</h3>
+          <div className="summary-value">0</div>
+          <p className="summary-label">
+            Log your first check-in to unlock symptom trends.
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
   function getLatestEntry() {
     if (safeEntries.length === 0) return null
     return [...safeEntries].sort((a, b) => new Date(b.date) - new Date(a.date))[0]
