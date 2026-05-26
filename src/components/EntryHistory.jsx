@@ -93,6 +93,7 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
           <th>Bloating</th>
           <th>Flare</th>
           <th>Stool</th>
+          <th>Triggers</th>
           <th>Foods</th>
           <th>Notes</th>
           <th>Action</th>
@@ -115,7 +116,19 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
                   {entry.flareStatus || '—'}
                 </span>
               </td>
-              <td>{entry.stool}/7</td>
+              <td>
+                <div className="history-trigger-list">
+                  {entry.triggers && entry.triggers.length > 0 ? (
+                    entry.triggers.map((trigger) => (
+                      <span key={trigger} className="history-trigger-chip">
+                        {trigger}
+                      </span>
+                    ))
+                  ) : (
+                    <span>—</span>
+                  )}
+                </div>
+              </td>
               <td title={entry.keyFoods}>
                 {truncateText(entry.keyFoods)}
               </td>
