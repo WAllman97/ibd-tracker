@@ -230,6 +230,20 @@ function duplicateYesterday() {
       return
     }
 
+    const existingEntryForDate = entries.find(
+      (entry) => entry.date === formData.date
+    )
+    
+    if (existingEntryForDate) {
+      const shouldOverwrite = confirm(
+        'An entry already exists for this date. Do you want to overwrite it?'
+      )
+    
+      if (!shouldOverwrite) {
+        return
+      }
+    }
+    
     const result = onAddEntry(formData)
 
     if (result && result.success === false) {
@@ -441,7 +455,7 @@ function duplicateYesterday() {
           </button>
         
           <button type="submit" className="btn-primary">
-            Save today
+            Save form
           </button>
         
           <button
