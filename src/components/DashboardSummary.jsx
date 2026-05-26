@@ -4,6 +4,7 @@ import { calculateRollingAverage } from '../utils/calculateAverages'
 import { calculateDaysSinceFlare } from '../utils/daysSinceFlare'
 import { detectTrend } from '../utils/detectTrend'
 import { generateWeeklySummary } from '../utils/generateWeeklySummary'
+import { analyseTriggers } from '../utils/analyseTriggers'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -57,6 +58,7 @@ function DashboardSummary({ entries }) {
   const recentFlares = getRecentFlareDays()
   const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
   const currentStreak = calculateCurrentStreak(safeEntries)
+  const triggerInsight = analyseTriggers(safeEntries)
 
   return (
     <section className="dashboard-summary">
@@ -87,6 +89,21 @@ function DashboardSummary({ entries }) {
           <p className="summary-eyebrow">Weekly Insight</p>
           <h3>Health Summary</h3>
           <p className="weekly-summary-text">{weeklySummary}</p>
+        </div>
+      </div>
+
+      <div className="summary-card summary-card-wide trigger-insight-card">
+        <div className="summary-card-content">
+          <p className="summary-eyebrow">Trigger Pattern</p>
+          <h3>Most Common Trigger</h3>
+      
+          <div className="summary-value">
+            {triggerInsight.topTrigger}
+          </div>
+      
+          <p className="summary-label">
+            {triggerInsight.message}
+          </p>
         </div>
       </div>
 
