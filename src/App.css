@@ -412,6 +412,15 @@ button {
   font-weight: 700;
   color: #245953;
 }
+.trigger-insight-card {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 1px solid #e2e8f0;
+}
+
+.trigger-insight-card .summary-value {
+  font-size: 24px;
+  margin-top: 8px;
+}
 /* ============================================================================
    Trend Cards
    ============================================================================ */
