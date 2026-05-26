@@ -408,10 +408,10 @@ button {
 .history-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .history-controls {
@@ -420,26 +420,51 @@ button {
   gap: 12px;
 }
 
+.history-controls label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.history-controls select {
+  width: 140px;
+}
+
 .entries-table {
   width: 100%;
   border-collapse: collapse;
+  background: white;
 }
 
 .entries-table th {
-  padding: 12px;
+  padding: 14px 12px;
   background: #f3f4f6;
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #dfe3e6;
 }
 
 .entries-table td {
   padding: 12px;
   border-bottom: 1px solid #e5e7eb;
   font-size: 14px;
+  vertical-align: middle;
 }
 
 .entries-table tbody tr:hover {
   background: #f9fafb;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 /* ============================================================================
