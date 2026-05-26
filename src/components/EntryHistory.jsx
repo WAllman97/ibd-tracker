@@ -53,8 +53,8 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
    * Get CSS class for score severity
    */
   function getScoreClass(score) {
-    if (score >= 60) return 'score-high'
-    if (score >= 40) return 'score-medium'
+    if (score >= 7) return 'score-high'
+    if (score >= 4) return 'score-medium'
     return 'score-low'
   }
 
@@ -105,15 +105,15 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
       <tbody>
         {/* Map through entries and render a table row for each */}
         {sortedEntries.map(entry => {
-          const score = calculateFlareRiskScore(entry)
-          const scoreClass = getScoreClass(score)
+          const painClass = getScoreClass(Number(entry.pain))
+          const bloatingClass = getScoreClass(Number(entry.bloating))
           const flareClass = getFlareClass(entry.flareStatus)
 
           return (
             <tr key={entry.id}>
               <td>{formatDate(entry.date)}</td>
-              <td className={scoreClass}>{entry.pain}/10</td>
-              <td className={scoreClass}>{entry.bloating}/10</td>
+              <td className={painClass}>{entry.pain}/10</td>
+              <td className={bloatingClass}>{entry.bloating}/10</td>
               <td>
                 <span className={flareClass}>
                   {entry.flareStatus || '—'}
