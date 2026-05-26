@@ -2,6 +2,7 @@ import { calculateFlareRiskScore } from '../utils/flareCalculations'
 import { calculateCurrentStreak } from '../utils/calculateStreak'
 import { calculateRollingAverage } from '../utils/calculateAverages'
 import { calculateDaysSinceFlare } from '../utils/daysSinceFlare'
+import { detectTrend } from '../utils/detectTrend'
 
 function DashboardSummary({ entries }) {
   const safeEntries = Array.isArray(entries) ? entries : []
@@ -49,7 +50,7 @@ function DashboardSummary({ entries }) {
   const avgPain = calculateRollingAverage(safeEntries, 'pain', 7)
   const avgBloating = calculateRollingAverage(safeEntries, 'bloating', 7)
   const latestFlare = getLatestFlareStatus()
-  const trend = getTrend()
+  const trend = detectTrend(safeEntries)
   const recentFlares = getRecentFlareDays()
   const currentStreak = calculateCurrentStreak(safeEntries)
   const daysSinceFlare = calculateDaysSinceFlare(safeEntries)
@@ -83,10 +84,11 @@ function DashboardSummary({ entries }) {
 
       <div className="summary-card">
         <div className="summary-card-content">
-          <h3>Trend 7d</h3>
-          <div className={`summary-value trend-${trend}`}>
-            {trend === 'rising' ? '📈 Rising' : '📊 Stable'}
+          <h3>Trend</h3>
+          <div className={`summary-value trend-${trend.status}`}>
+            {trend.label}
           </div>
+          <p className="summary-label">recent vs previous</p>
         </div>
       </div>
 
