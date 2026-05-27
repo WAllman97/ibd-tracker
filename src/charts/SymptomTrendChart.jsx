@@ -18,11 +18,17 @@ function calculateOverallScore(entry) {
 }
 
 function SymptomTrendChart({ entries }) {
-  if (!entries || entries.length === 0) {
+  const entryCount = entries?.length || 0
+  const hasEnoughForTrend = entryCount >= 3
+
+  if (entryCount === 0) {
     return (
-      <section className="card">
+      <section className="card empty-chart-card">
         <h2>Overall Symptom Trend</h2>
-        <p>No symptom data yet. Complete a few daily check-ins to see trends.</p>
+        <p>
+          No symptom trend yet. Complete your first daily check-in to start building
+          your personal health timeline.
+        </p>
       </section>
     )
   }
@@ -41,7 +47,11 @@ function SymptomTrendChart({ entries }) {
   return (
     <section className="card">
       <h2>Overall Symptom Trend</h2>
-      <p className="chart-subtitle">Average of pain, bloating, fatigue and stress — last 14 entries</p>
+      <p className="chart-subtitle">
+        {hasEnoughForTrend
+          ? 'Average of pain, bloating, fatigue and stress — last 14 entries.'
+          : 'Trend accuracy improves once you have at least 3 daily check-ins.'}
+      </p>
 
       <div className="chart-container">
         <ResponsiveContainer width="100%" height={280}>

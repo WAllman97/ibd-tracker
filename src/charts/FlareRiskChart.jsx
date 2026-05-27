@@ -14,11 +14,17 @@ import { calculateFlareRiskScore } from '../utils/flareCalculations'
 const FLARE_THRESHOLD = 6
 
 function FlareRiskChart({ entries }) {
-  if (!entries || entries.length === 0) {
+  const entryCount = entries?.length || 0
+  const hasEnoughForTrend = entryCount >= 3
+
+  if (entryCount === 0) {
     return (
-      <section className="card">
+      <section className="card empty-chart-card">
         <h2>Flare Risk Trend</h2>
-        <p>No flare risk data yet. Complete a few check-ins to see your trend.</p>
+        <p>
+          No flare risk trend yet. Complete your first daily check-in to start
+          tracking whether your symptoms are moving towards flare territory.
+        </p>
       </section>
     )
   }
@@ -38,7 +44,9 @@ function FlareRiskChart({ entries }) {
     <section className="card">
       <h2>Flare Risk Trend</h2>
       <p className="chart-subtitle">
-        Scores above {FLARE_THRESHOLD} may indicate elevated flare risk.
+        {hasEnoughForTrend
+          ? `Scores above ${FLARE_THRESHOLD} may indicate elevated flare risk.`
+          : 'Trend accuracy improves once you have at least 3 daily check-ins.'}
       </p>
 
       <div className="chart-container">
