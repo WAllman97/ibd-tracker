@@ -819,6 +819,62 @@ button {
   line-height: 1.6;
   margin-bottom: 0;
 }
+/* ============================================================================
+   Average Comparison Cards
+   ============================================================================ */
+
+.average-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.comparison-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eef2f1;
+}
+
+.comparison-label {
+  margin: 0 0 10px;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.comparison-value {
+  margin: 0;
+  color: #245953;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.trend-improving {
+  color: #166534;
+}
+
+.trend-stable {
+  color: #245953;
+}
+
+.trend-worsening {
+  color: #991b1b;
+}
+
+.trend-not-enough-data {
+  color: #667085;
+  font-size: 22px;
+}
+
+@media (max-width: 700px) {
+  .average-comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
 
 /* ============================================================================
    Footer

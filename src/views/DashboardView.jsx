@@ -1,6 +1,7 @@
 import DashboardSummary from '../components/DashboardSummary'
 import SymptomTrendChart from '../charts/SymptomTrendChart'
 import FlareRiskChart from '../charts/FlareRiskChart'
+import AverageComparisonCards from '../components/AverageComparisonCards'
 
 function DashboardView({ entries }) {
   return (
@@ -15,6 +16,8 @@ function DashboardView({ entries }) {
         </div>
 
         <DashboardSummary entries={entries} />
+
+        <AverageComparisonCards entries={entries} />
       </section>
 
       <section className="dashboard-section">
