@@ -1,5 +1,6 @@
 import DashboardSummary from '../components/DashboardSummary'
 import SymptomTrendChart from '../charts/SymptomTrendChart'
+import FlareRiskChart from '../charts/FlareRiskChart'
 
 function DashboardView({ entries }) {
   return (
@@ -7,6 +8,8 @@ function DashboardView({ entries }) {
       <DashboardSummary entries={entries} />
 
       <SymptomTrendChart entries={entries} />
+
+      <FlareRiskChart entries={entries} />
 
       <section className="card">
         <h2>When to Seek Help</h2>
