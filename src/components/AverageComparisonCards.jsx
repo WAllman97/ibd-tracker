@@ -17,9 +17,7 @@ function calculateAverage(entries, days) {
     const fatigue = Number(entry.fatigue) || 0
     const stress = Number(entry.stress) || 0
 
-    const overallScore = (pain + bloating + fatigue + stress) / 4
-
-    return sum + overallScore
+    return sum + (pain + bloating + fatigue + stress) / 4
   }, 0)
 
   return Number((total / recentEntries.length).toFixed(1))
@@ -42,30 +40,36 @@ function AverageComparisonCards({ entries }) {
   const trendLabel = getTrendLabel(sevenDayAvg, thirtyDayAvg)
 
   return (
-    <section className="average-comparison-grid">
-      <div className="comparison-card">
-        <p className="comparison-label">7-Day Average</p>
-        <p className="comparison-value">
-          {sevenDayAvg !== null ? sevenDayAvg : '—'}
+    <section className="average-comparison-card">
+      <div className="average-comparison-header">
+        <p className="summary-eyebrow">Recent Direction</p>
+        <h3>7-Day vs 30-Day Symptom Average</h3>
+        <p>
+          Compares your recent symptom burden against your wider baseline.
         </p>
       </div>
 
-      <div className="comparison-card">
-        <p className="comparison-label">30-Day Average</p>
-        <p className="comparison-value">
-          {thirtyDayAvg !== null ? thirtyDayAvg : '—'}
-        </p>
-      </div>
+      <div className="average-comparison-metrics">
+        <div>
+          <span>7-Day Avg</span>
+          <strong>{sevenDayAvg !== null ? sevenDayAvg : '—'}</strong>
+        </div>
 
-      <div className="comparison-card">
-        <p className="comparison-label">Recent Direction</p>
-        <p
-          className={`comparison-value trend-${trendLabel
-            .toLowerCase()
-            .replaceAll(' ', '-')}`}
-        >
-          {trendLabel}
-        </p>
+        <div>
+          <span>30-Day Avg</span>
+          <strong>{thirtyDayAvg !== null ? thirtyDayAvg : '—'}</strong>
+        </div>
+
+        <div>
+          <span>Direction</span>
+          <strong
+            className={`trend-${trendLabel
+              .toLowerCase()
+              .replaceAll(' ', '-')}`}
+          >
+            {trendLabel}
+          </strong>
+        </div>
       </div>
     </section>
   )

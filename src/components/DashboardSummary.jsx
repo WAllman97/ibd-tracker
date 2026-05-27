@@ -1,6 +1,5 @@
 import { calculateFlareRiskScore } from '../utils/flareCalculations'
 import { calculateCurrentStreak } from '../utils/calculateStreak'
-import { calculateRollingAverage } from '../utils/calculateAverages'
 import { calculateDaysSinceFlare } from '../utils/daysSinceFlare'
 import { detectTrend } from '../utils/detectTrend'
 import { generateWeeklySummary } from '../utils/generateWeeklySummary'
@@ -50,8 +49,6 @@ function DashboardSummary({ entries }) {
       .length
   }
 
-  const avgPain = calculateRollingAverage(safeEntries, 'pain', 7)
-  const avgBloating = calculateRollingAverage(safeEntries, 'bloating', 7)
   const latestFlare = getLatestFlareStatus()
   const trend = detectTrend(safeEntries)
   const weeklySummary = generateWeeklySummary(safeEntries)
@@ -104,22 +101,6 @@ function DashboardSummary({ entries }) {
         <p className={`summary-label trigger-confidence-${triggerInsight.confidence}`}>
           {triggerInsight.message}
         </p>
-        </div>
-      </div>
-
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>7-Day Avg Pain</h3>
-          <div className="summary-value">{avgPain}</div>
-          <p className="summary-label">out of 10</p>
-        </div>
-      </div>
-
-      <div className="summary-card">
-        <div className="summary-card-content">
-          <h3>7-Day Avg Bloating</h3>
-          <div className="summary-value">{avgBloating}</div>
-          <p className="summary-label">out of 10</p>
         </div>
       </div>
 

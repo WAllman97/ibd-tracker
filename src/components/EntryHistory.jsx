@@ -110,44 +110,56 @@ function EntryHistory({ entries, filterDays, onDeleteEntry }) {
           const flareClass = getFlareClass(entry.flareStatus)
 
           return (
-            <tr key={entry.id}>
-              <td>{formatDate(entry.date)}</td>
-              <td className={painClass}>{entry.pain}/10</td>
-              <td className={bloatingClass}>{entry.bloating}/10</td>
-              <td>
-                <span className={flareClass}>
-                  {entry.flareStatus || '—'}
-                </span>
-              </td>
-                <td>{entry.stool}/7</td>              
-              <td>
-                <div className="history-trigger-list">
-                  {entry.triggers && entry.triggers.length > 0 ? (
-                    entry.triggers.map((trigger) => (
-                      <span key={trigger} className="history-trigger-chip">
-                        {trigger}
-                      </span>
-                    ))
-                  ) : (
-                    <span>—</span>
-                  )}
-                </div>
-              </td>
-              <td title={entry.keyFoods}>
-                {truncateText(entry.keyFoods)}
-              </td>
-              <td title={entry.notes}>
-                {truncateText(entry.notes)}
-              </td>
-              <td>
-                <button
-                  className="btn-delete"
-                  onClick={() => onDeleteEntry(entry.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+          <tr key={entry.id}>
+            <td data-label="Date">{formatDate(entry.date)}</td>
+
+            <td data-label="Pain" className={painClass}>
+              {entry.pain}/10
+            </td>
+
+            <td data-label="Bloating" className={bloatingClass}>
+              {entry.bloating}/10
+            </td>
+
+            <td data-label="Flare">
+              <span className={flareClass}>
+                {entry.flareStatus || '—'}
+              </span>
+            </td>
+
+            <td data-label="Stool">{entry.stool}/7</td>
+
+            <td data-label="Triggers">
+              <div className="history-trigger-list">
+                {entry.triggers && entry.triggers.length > 0 ? (
+                  entry.triggers.map((trigger) => (
+                    <span key={trigger} className="history-trigger-chip">
+                      {trigger}
+                    </span>
+                  ))
+                ) : (
+                  <span>—</span>
+                )}
+              </div>
+            </td>
+
+            <td data-label="Foods" title={entry.keyFoods}>
+              {truncateText(entry.keyFoods)}
+            </td>
+
+            <td data-label="Notes" title={entry.notes}>
+              {truncateText(entry.notes)}
+            </td>
+
+            <td data-label="Action">
+              <button
+                className="btn-delete"
+                onClick={() => onDeleteEntry(entry.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
           )
         })}
       </tbody>
