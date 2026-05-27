@@ -51,7 +51,9 @@ function FlareRiskChart({ entries }) {
             <ReferenceLine
               y={FLARE_THRESHOLD}
               label="Flare threshold"
-              strokeDasharray="6 6"
+              stroke="#dc2626"
+              strokeWidth={2}
+              strokeDasharray="8 8"
             />
             <Line
               type="monotone"
