@@ -6,14 +6,22 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  Legend,
 } from 'recharts'
+
+function calculateOverallScore(entry) {
+  const pain = Number(entry.pain) || 0
+  const bloating = Number(entry.bloating) || 0
+  const fatigue = Number(entry.fatigue) || 0
+  const stress = Number(entry.stress) || 0
+
+  return Number(((pain + bloating + fatigue + stress) / 4).toFixed(1))
+}
 
 function SymptomTrendChart({ entries }) {
   if (!entries || entries.length === 0) {
     return (
       <section className="card">
-        <h2>Symptom Trends</h2>
+        <h2>Overall Symptom Trend</h2>
         <p>No symptom data yet. Complete a few daily check-ins to see trends.</p>
       </section>
     )
@@ -27,15 +35,13 @@ function SymptomTrendChart({ entries }) {
         day: '2-digit',
         month: 'short',
       }),
-      pain: Number(entry.pain) || 0,
-      bloating: Number(entry.bloating) || 0,
-      stoolFrequency: Number(entry.stoolFrequency) || 0,
+      overallScore: calculateOverallScore(entry),
     }))
 
   return (
     <section className="card">
-      <h2>Symptom Trends</h2>
-      <p className="chart-subtitle">Last 14 entries</p>
+      <h2>Overall Symptom Trend</h2>
+      <p className="chart-subtitle">Average of pain, bloating, fatigue and stress — last 14 entries</p>
 
       <div className="chart-container">
         <ResponsiveContainer width="100%" height={280}>
@@ -44,28 +50,10 @@ function SymptomTrendChart({ entries }) {
             <XAxis dataKey="date" />
             <YAxis domain={[0, 10]} />
             <Tooltip />
-            <Legend />
-
             <Line
               type="monotone"
-              dataKey="pain"
-              name="Pain"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="bloating"
-              name="Bloating"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-            />
-
-            <Line
-              type="monotone"
-              dataKey="stoolFrequency"
-              name="Stool Frequency"
+              dataKey="overallScore"
+              name="Overall Score"
               strokeWidth={3}
               dot={{ r: 4 }}
             />
