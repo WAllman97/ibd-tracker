@@ -1,9 +1,12 @@
 import DashboardSummary from '../components/DashboardSummary'
+import SymptomTrendChart from '../charts/SymptomTrendChart'
 
 function DashboardView({ entries }) {
   return (
     <>
       <DashboardSummary entries={entries} />
+
+      <SymptomTrendChart entries={entries} />
 
       <section className="card">
         <h2>When to Seek Help</h2>
