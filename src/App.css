@@ -540,6 +540,93 @@ button {
   color: #991b1b;
   font-weight: 600;
 }
+
+/* ============================================================================
+   Dashboard View Polish
+   ============================================================================ */
+
+.dashboard-view {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.section-header {
+  max-width: 760px;
+}
+
+.section-header h2 {
+  margin: 4px 0 8px;
+  color: #163832;
+  font-size: 26px;
+}
+
+.section-header p {
+  margin: 0;
+  color: #667085;
+  line-height: 1.6;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.chart-grid .card {
+  margin-bottom: 0;
+}
+
+.clinical-card {
+  border-left: 5px solid #245953;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+}
+
+.clinical-card h2 {
+  margin-bottom: 12px;
+}
+
+.clinical-card p:last-child {
+  margin-bottom: 0;
+  color: #374151;
+  line-height: 1.6;
+}
+
+@media (min-width: 900px) {
+  .chart-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .chart-grid .card {
+    height: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-view {
+    gap: 22px;
+  }
+
+  .section-header h2 {
+    font-size: 22px;
+  }
+
+  .section-header p {
+    font-size: 14px;
+  }
+
+  .chart-grid {
+    gap: 18px;
+  }
+}
+
 /* ============================================================================
    Trend Cards
    ============================================================================ */
