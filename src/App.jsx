@@ -5,7 +5,7 @@ import NavigationTabs from './components/NavigationTabs'
 import CheckInView from './views/CheckInView'
 import DashboardView from './views/DashboardView'
 import HistoryView from './views/HistoryView'
-import { supabase } from "./lib/supabaseClient";
+import { supabase } from './lib/supabaseClient'
 import AuthForm from './components/AuthForm'
 import ProfileSetup from './components/ProfileSetup'
 
@@ -25,21 +25,23 @@ function App() {
 
   const [activeTab, setActiveTab] = useState('checkin')
   const [filterDays, setFilterDays] = useState(7)
-  
+
   const [profile, setProfile] = useState(null)
   const [profileLoading, setProfileLoading] = useState(false)
+
+  const safeEntries = entries || []
 
   const fetchProfile = async (userId) => {
     setProfileLoading(true)
 
     const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
       .single()
 
     if (error) {
-      console.log("PROFILE ERROR:", error)
+      console.log('PROFILE ERROR:', error)
       setProfile(null)
     } else {
       setProfile(data)
@@ -56,15 +58,15 @@ function App() {
     }
   }
 
-  const handleDeleteEntry = (entryId) => {
+  const handleDeleteEntry = async (entryId) => {
     if (confirm('Delete this entry?')) {
-      removeEntry(entryId)
+      await removeEntry(entryId)
     }
   }
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     if (confirm('⚠️ This will permanently delete ALL entries. Are you sure?')) {
-      clearAll()
+      await clearAll()
     }
   }
 
@@ -92,66 +94,72 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-return (
-  <div className="app">
-    <header className="hero">
-      <h1>IBD Symptom Tracker</h1>
-      <p>Track symptoms, flare status, and daily health in one place.</p>
+  return (
+    <div className="app">
+      <header className="hero">
+        <h1>IBD Symptom Tracker</h1>
+        <p>Track symptoms, flare status, and daily health in one place.</p>
 
-      {session && profile && (
-        <div className="user-bar">
-          <span>Welcome back, {profile.username}</span>
+        {session && profile && (
+          <div className="user-bar">
+            <span>Welcome back, {profile.username}</span>
 
-          <button
-            className="logout-button"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Log out
-          </button>
-        </div>
-      )}
-    </header>
+            <button
+              className="logout-button"
+              onClick={() => supabase.auth.signOut()}
+            >
+              Log out
+            </button>
+          </div>
+        )}
+      </header>
 
-    {!session && <AuthForm />}
+      {!session && <AuthForm />}
 
-    {session && !profileLoading && !profile && (
-      <ProfileSetup
-        session={session}
-        onProfileSaved={() => fetchProfile(session.user.id)}
-      />
-    )}
-
-    <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-    <main className="container">
-      {loadingEntries && (
-        <p className="helper-text">Loading your entries...</p>
-      )}
-
-      {entriesError && (
-        <p className="error-text">{entriesError}</p>
-      )}
-
-      {activeTab === 'checkin' && (
-        <CheckInView entries={entries} onAddEntry={handleAddEntry} />
-      )}
-
-      {activeTab === 'history' && (
-        <HistoryView
-          entries={entries}
-          filterDays={filterDays}
-          setFilterDays={setFilterDays}
-          onDeleteEntry={handleDeleteEntry}
-          onClearAll={handleClearAll}
+      {session && !profileLoading && !profile && (
+        <ProfileSetup
+          session={session}
+          onProfileSaved={() => fetchProfile(session.user.id)}
         />
       )}
-    </main>
 
-    <footer>
-      Created as a learning project. Data securely stored in the cloud.
-    </footer>
-  </div>
-)
+      {session && profile && (
+        <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      )}
+
+      <main className="container">
+        {loadingEntries && (
+          <p className="helper-text">Loading your entries...</p>
+        )}
+
+        {entriesError && (
+          <p className="error-text">{entriesError}</p>
+        )}
+
+        {session && profile && !loadingEntries && activeTab === 'checkin' && (
+          <CheckInView entries={safeEntries} onAddEntry={handleAddEntry} />
+        )}
+
+        {session && profile && !loadingEntries && activeTab === 'dashboard' && (
+          <DashboardView entries={safeEntries} />
+        )}
+
+        {session && profile && !loadingEntries && activeTab === 'history' && (
+          <HistoryView
+            entries={safeEntries}
+            filterDays={filterDays}
+            setFilterDays={setFilterDays}
+            onDeleteEntry={handleDeleteEntry}
+            onClearAll={handleClearAll}
+          />
+        )}
+      </main>
+
+      <footer>
+        Created as a learning project. Data securely stored in the cloud.
+      </footer>
+    </div>
+  )
 }
-export default App
 
+export default App
