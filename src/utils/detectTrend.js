@@ -1,4 +1,4 @@
-import { calculateFlareRiskScore } from './flareCalculations'
+import { calculateFlareRiskScore } from './flareCalculations.js'
 
 function averageScore(entries) {
   if (!entries.length) return 0
