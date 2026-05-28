@@ -8,6 +8,7 @@ import HistoryView from './views/HistoryView'
 import { supabase } from './lib/supabaseClient'
 import AuthForm from './components/AuthForm'
 import ProfileSetup from './components/ProfileSetup'
+import Settings from "./views/Settings";
 
 import './App.css'
 
@@ -152,6 +153,10 @@ function App() {
             onDeleteEntry={handleDeleteEntry}
             onClearAll={handleClearAll}
           />
+        )}
+
+        {session && profile && !loadingEntries && activeTab === 'settings' && (
+          <Settings user={session.user} />
         )}
       </main>
 

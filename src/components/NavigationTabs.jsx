@@ -3,6 +3,7 @@ function NavigationTabs({ activeTab, setActiveTab }) {
     { id: 'checkin', label: 'Check-In' },
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'history', label: 'History' },
+    { id: 'settings', label: 'Settings' },
   ]
 
   return (
