@@ -85,7 +85,7 @@ function DashboardSummary({ entries }) {
         <div className="summary-card-content">
           <p className="summary-eyebrow">Weekly Insight</p>
           <h3>Health Summary</h3>
-          <p className="weekly-summary-text">{weeklySummary}</p>
+          <p className="weekly-summary-text">{weeklySummary.message}</p>
         </div>
       </div>
 

@@ -14,7 +14,6 @@ function DashboardView({ entries }) {
             A quick snapshot of your recent symptoms, flare risk and logging consistency.
           </p>
         </div>
-
         <DashboardSummary entries={entries} />
 
         <AverageComparisonCards entries={entries} />

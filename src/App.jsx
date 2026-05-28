@@ -9,6 +9,7 @@ import { supabase } from './lib/supabaseClient'
 import AuthForm from './components/AuthForm'
 import ProfileSetup from './components/ProfileSetup'
 import Settings from "./views/Settings";
+import EmailPreview from './views/EmailPreview'
 
 import './App.css'
 
@@ -157,6 +158,10 @@ function App() {
 
         {session && profile && !loadingEntries && activeTab === 'settings' && (
           <Settings user={session.user} />
+        )}
+
+        {session && profile && !loadingEntries && activeTab === 'email-preview' && (
+          <EmailPreview entries={safeEntries} />
         )}
       </main>
 
