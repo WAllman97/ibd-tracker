@@ -1,5 +1,5 @@
-import { calculateFlareRiskScore } from './flareCalculations'
-import { detectTrend } from './detectTrend'
+import { calculateFlareRiskScore } from './flareCalculations.js'
+import { detectTrend } from './detectTrend.js'
 
 function average(entries, field) {
   if (!entries.length) return 0
