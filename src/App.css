@@ -1405,3 +1405,144 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   Onboarding PAGE
+========================= */
+
+.email-preview-header {
+  margin-bottom: 1.5rem;
+}
+
+.email-preview-frame {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+.onboarding-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.16), transparent 32%),
+    linear-gradient(135deg, #ecfdf5 0%, #f8fafc 45%, #eef2ff 100%);
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.onboarding-step {
+  display: inline-flex;
+  margin: 0 0 18px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #ccfbf1;
+  color: #0f766e;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.onboarding-card h1 {
+  margin: 0 0 14px;
+  color: #0f172a;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.onboarding-card p {
+  margin: 0;
+  color: #475569;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.onboarding-progress {
+  display: flex;
+  gap: 8px;
+  margin: 34px 0;
+}
+
+.onboarding-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.onboarding-dot.active {
+  width: 34px;
+  background: #0f766e;
+}
+
+.onboarding-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.primary-button,
+.secondary-button {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 20px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.primary-button {
+  background: #0f766e;
+  color: white;
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.25);
+}
+
+.primary-button:hover {
+  background: #115e59;
+  transform: translateY(-1px);
+}
+
+.secondary-button {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.secondary-button:hover {
+  background: #cbd5e1;
+}
+
+@media (max-width: 520px) {
+  .onboarding-page {
+    padding: 16px;
+    align-items: stretch;
+  }
+
+  .onboarding-card {
+    margin: auto 0;
+    padding: 28px 22px;
+    border-radius: 24px;
+  }
+
+  .onboarding-actions {
+    flex-direction: column-reverse;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}

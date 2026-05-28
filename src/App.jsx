@@ -8,8 +8,9 @@ import HistoryView from './views/HistoryView'
 import { supabase } from './lib/supabaseClient'
 import AuthForm from './components/AuthForm'
 import ProfileSetup from './components/ProfileSetup'
-import Settings from "./views/Settings";
+import Settings from './views/Settings'
 import EmailPreview from './views/EmailPreview'
+import Onboarding from './views/Onboarding'
 
 import './App.css'
 
@@ -50,6 +51,27 @@ function App() {
     }
 
     setProfileLoading(false)
+  }
+
+  async function handleOnboardingComplete() {
+    if (!session?.user?.id) return
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ onboarding_completed: true })
+      .eq('id', session.user.id)
+
+    if (error) {
+      console.error('Error completing onboarding:', error)
+      return
+    }
+
+    setProfile((currentProfile) => ({
+      ...currentProfile,
+      onboarding_completed: true,
+    }))
+
+    setActiveTab('checkin')
   }
 
   const handleAddEntry = async (newEntry) => {
@@ -96,6 +118,13 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
+  const hasCompletedOnboarding = profile?.onboarding_completed === true
+
+  // FULLSCREEN ONBOARDING
+  if (session && profile && !hasCompletedOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />
+  }
+
   return (
     <div className="app">
       <header className="hero">
@@ -125,8 +154,11 @@ function App() {
         />
       )}
 
-      {session && profile && (
-        <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      {session && profile && hasCompletedOnboarding && (
+        <NavigationTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       )}
 
       <main className="container">
@@ -138,31 +170,54 @@ function App() {
           <p className="error-text">{entriesError}</p>
         )}
 
-        {session && profile && !loadingEntries && activeTab === 'checkin' && (
-          <CheckInView entries={safeEntries} onAddEntry={handleAddEntry} />
-        )}
+        {session &&
+          profile &&
+          hasCompletedOnboarding &&
+          !loadingEntries &&
+          activeTab === 'checkin' && (
+            <CheckInView
+              entries={safeEntries}
+              onAddEntry={handleAddEntry}
+            />
+          )}
 
-        {session && profile && !loadingEntries && activeTab === 'dashboard' && (
-          <DashboardView entries={safeEntries} />
-        )}
+        {session &&
+          profile &&
+          hasCompletedOnboarding &&
+          !loadingEntries &&
+          activeTab === 'dashboard' && (
+            <DashboardView entries={safeEntries} />
+          )}
 
-        {session && profile && !loadingEntries && activeTab === 'history' && (
-          <HistoryView
-            entries={safeEntries}
-            filterDays={filterDays}
-            setFilterDays={setFilterDays}
-            onDeleteEntry={handleDeleteEntry}
-            onClearAll={handleClearAll}
-          />
-        )}
+        {session &&
+          profile &&
+          hasCompletedOnboarding &&
+          !loadingEntries &&
+          activeTab === 'history' && (
+            <HistoryView
+              entries={safeEntries}
+              filterDays={filterDays}
+              setFilterDays={setFilterDays}
+              onDeleteEntry={handleDeleteEntry}
+              onClearAll={handleClearAll}
+            />
+          )}
 
-        {session && profile && !loadingEntries && activeTab === 'settings' && (
-          <Settings user={session.user} />
-        )}
+        {session &&
+          profile &&
+          hasCompletedOnboarding &&
+          !loadingEntries &&
+          activeTab === 'settings' && (
+            <Settings user={session.user} />
+          )}
 
-        {session && profile && !loadingEntries && activeTab === 'email-preview' && (
-          <EmailPreview entries={safeEntries} />
-        )}
+        {session &&
+          profile &&
+          hasCompletedOnboarding &&
+          !loadingEntries &&
+          activeTab === 'email-preview' && (
+            <EmailPreview entries={safeEntries} />
+          )}
       </main>
 
       <footer>
