@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
+import {
+  fetchEntries,
+  saveEntry,
+  deleteEntry,
+  clearEntries,
+} from '../services/entriesService'
 
-const STORAGE_KEY = 'ibd_entries'
 const MAX_ENTRIES = 365
 
 function createId() {
-  return `${Date.now()}-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}`
+  return crypto.randomUUID()
 }
 
 function toNumber(value, fallback = 0) {
@@ -38,94 +43,122 @@ function sortEntries(entries) {
   return [...entries].sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
-function getEntriesFromStorage() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (!data) return []
-
-    const parsed = JSON.parse(data)
-    if (!Array.isArray(parsed)) return []
-
-    return sortEntries(parsed.map(normaliseEntry))
-  } catch (error) {
-    console.error('Failed to load entries:', error)
-    return []
-  }
-}
-
-function saveEntriesToStorage(entries) {
-  try {
-    const entriesToSave = sortEntries(entries).slice(0, MAX_ENTRIES)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entriesToSave))
-  } catch (error) {
-    console.error('Failed to save entries:', error)
-  }
-}
-
-export function useEntries() {
+export function useEntries(user) {
   const [entries, setEntries] = useState([])
+  const [loadingEntries, setLoadingEntries] = useState(false)
+  const [entriesError, setEntriesError] = useState('')
 
   useEffect(() => {
-    setEntries(getEntriesFromStorage())
-  }, [])
-
-  const addEntry = (entryData) => {
-    const newEntry = normaliseEntry(entryData)
-
-    const existingIndex = entries.findIndex((entry) => entry.date === newEntry.date)
-
-    let updatedEntries
-
-    if (existingIndex !== -1) {
-      updatedEntries = [...entries]
-      updatedEntries[existingIndex] = {
-        ...newEntry,
-        id: entries[existingIndex].id,
-        createdAt: entries[existingIndex].createdAt,
-        updatedAt: new Date().toISOString(),
+    async function loadEntries() {
+      if (!user) {
+        setEntries([])
+        return
       }
-    } else {
-      updatedEntries = [...entries, newEntry]
+
+      setLoadingEntries(true)
+      setEntriesError('')
+
+      try {
+        const cloudEntries = await fetchEntries(user.id)
+        setEntries(sortEntries(cloudEntries).slice(0, MAX_ENTRIES))
+      } catch (error) {
+        console.error('Failed to load entries:', error)
+        setEntriesError('Could not load entries.')
+      } finally {
+        setLoadingEntries(false)
+      }
     }
 
-    const sortedEntries = sortEntries(updatedEntries)
+    loadEntries()
+  }, [user])
 
-    setEntries(sortedEntries)
-    saveEntriesToStorage(sortedEntries)
+  const addEntry = async (entryData) => {
+    if (!user) {
+      return { success: false, error: 'User not logged in' }
+    }
 
-    return { success: true, entry: newEntry }
-  }
+    const newEntry = normaliseEntry(entryData)
 
-  const editEntry = (entryId, updates) => {
-    const updatedEntries = sortEntries(
-      entries.map((entry) =>
-        entry.id === entryId
-          ? normaliseEntry({
-              ...entry,
-              ...updates,
-              id: entry.id,
-              createdAt: entry.createdAt,
-            })
-          : entry
+    try {
+      const savedEntry = await saveEntry(newEntry, user.id)
+
+      const existingIndex = entries.findIndex(
+        (entry) => entry.date === savedEntry.date
       )
-    )
 
-    setEntries(updatedEntries)
-    saveEntriesToStorage(updatedEntries)
+      let updatedEntries
 
-    return { success: true }
+      if (existingIndex !== -1) {
+        updatedEntries = [...entries]
+        updatedEntries[existingIndex] = savedEntry
+      } else {
+        updatedEntries = [...entries, savedEntry]
+      }
+
+      const sortedEntries = sortEntries(updatedEntries).slice(0, MAX_ENTRIES)
+      setEntries(sortedEntries)
+
+      return { success: true, entry: savedEntry }
+    } catch (error) {
+      console.error('Failed to save entry:', error)
+      return { success: false, error }
+    }
   }
 
-  const removeEntry = (entryId) => {
-    const updatedEntries = entries.filter((entry) => entry.id !== entryId)
+  const editEntry = async (entryId, updates) => {
+    if (!user) {
+      return { success: false, error: 'User not logged in' }
+    }
 
-    setEntries(updatedEntries)
-    saveEntriesToStorage(updatedEntries)
+    const existingEntry = entries.find((entry) => entry.id === entryId)
+
+    if (!existingEntry) {
+      return { success: false, error: 'Entry not found' }
+    }
+
+    const updatedEntry = normaliseEntry({
+      ...existingEntry,
+      ...updates,
+      id: existingEntry.id,
+      createdAt: existingEntry.createdAt,
+    })
+
+    try {
+      const savedEntry = await saveEntry(updatedEntry, user.id)
+
+      const updatedEntries = sortEntries(
+        entries.map((entry) =>
+          entry.id === entryId ? savedEntry : entry
+        )
+      )
+
+      setEntries(updatedEntries)
+
+      return { success: true }
+    } catch (error) {
+      console.error('Failed to edit entry:', error)
+      return { success: false, error }
+    }
   }
 
-  const clearAll = () => {
-    setEntries([])
-    localStorage.removeItem(STORAGE_KEY)
+  const removeEntry = async (entryId) => {
+    try {
+      await deleteEntry(entryId)
+      setEntries((prev) => prev.filter((entry) => entry.id !== entryId))
+    } catch (error) {
+      console.error('Failed to delete entry:', error)
+    }
+  }
+
+  const clearAll = async () => {
+    if (!user) return
+
+    try {
+      await clearEntries(user.id)
+      setEntries([])
+    } catch (error) {
+      console.error('Failed to clear entries:', error)
+    }
   }
 
   const entriesByDate = useMemo(() => {
@@ -142,5 +175,7 @@ export function useEntries() {
     editEntry,
     removeEntry,
     clearAll,
+    loadingEntries,
+    entriesError,
   }
 }

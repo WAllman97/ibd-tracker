@@ -12,12 +12,20 @@ import ProfileSetup from './components/ProfileSetup'
 import './App.css'
 
 function App() {
-  const { entries, addEntry, removeEntry, clearAll } = useEntries()
+  const [session, setSession] = useState(null)
+
+  const {
+    entries,
+    addEntry,
+    removeEntry,
+    clearAll,
+    loadingEntries,
+    entriesError,
+  } = useEntries(session?.user)
 
   const [activeTab, setActiveTab] = useState('checkin')
   const [filterDays, setFilterDays] = useState(7)
-  const [session, setSession] = useState(null)
-
+  
   const [profile, setProfile] = useState(null)
   const [profileLoading, setProfileLoading] = useState(false)
 
@@ -40,9 +48,12 @@ function App() {
     setProfileLoading(false)
   }
 
-  const handleAddEntry = (newEntry) => {
-    addEntry(newEntry)
-    setActiveTab('dashboard')
+  const handleAddEntry = async (newEntry) => {
+    const result = await addEntry(newEntry)
+
+    if (result?.success) {
+      setActiveTab('dashboard')
+    }
   }
 
   const handleDeleteEntry = (entryId) => {
@@ -113,12 +124,16 @@ return (
     <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
     <main className="container">
-      {activeTab === 'checkin' && (
-        <CheckInView entries={entries} onAddEntry={handleAddEntry} />
+      {loadingEntries && (
+        <p className="helper-text">Loading your entries...</p>
       )}
 
-      {activeTab === 'dashboard' && (
-        <DashboardView entries={entries} />
+      {entriesError && (
+        <p className="error-text">{entriesError}</p>
+      )}
+
+      {activeTab === 'checkin' && (
+        <CheckInView entries={entries} onAddEntry={handleAddEntry} />
       )}
 
       {activeTab === 'history' && (
@@ -133,7 +148,7 @@ return (
     </main>
 
     <footer>
-      Created as a learning project. Data stored locally in your browser.
+      Created as a learning project. Data securely stored in the cloud.
     </footer>
   </div>
 )
