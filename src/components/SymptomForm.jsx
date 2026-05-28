@@ -156,13 +156,26 @@ function SymptomForm({ entries, onAddEntry }) {
     }))
   }
 
+function getYesterday() {
+  const date = new Date()
+  date.setDate(date.getDate() - 1)
+  return date.toISOString().split('T')[0]
+}
+
 function duplicateYesterday() {
   if (!entries.length) {
     alert('No previous entries found')
     return
   }
 
-  const latestEntry = entries[0]
+  const yesterday = getYesterday()
+
+  const yesterdayEntry = entries.find((entry) => entry.date === yesterday)
+
+  if (!yesterdayEntry) {
+    alert('No entry found for yesterday')
+    return
+  }
 
   const today = getToday()
 
@@ -171,7 +184,7 @@ function duplicateYesterday() {
     createdAt,
     updatedAt,
     ...entryWithoutMeta
-  } = latestEntry
+  } = yesterdayEntry
 
   setFormData({
     ...entryWithoutMeta,
@@ -180,7 +193,7 @@ function duplicateYesterday() {
 
   setShowDetails(true)
 }
-  
+ 
   function getQuickRead() {
     const total =
       Number(formData.pain) +
@@ -223,7 +236,7 @@ function duplicateYesterday() {
     setShowDetails(false)
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
 
     if (!formData.date) {
@@ -245,7 +258,7 @@ function duplicateYesterday() {
       }
     }
     
-    const result = onAddEntry(formData)
+    const result = await onAddEntry(formData)
 
     if (result && result.success === false) {
       alert('Please check the form before saving.')
