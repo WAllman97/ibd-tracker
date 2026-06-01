@@ -25,6 +25,7 @@ const triggerOptions = [
   'Travel',
   'Antibiotics',
   'High fibre',
+  'Period',
 ]
 
 function getToday() {
