@@ -390,6 +390,33 @@ textarea {
   resize: vertical;
   min-height: 80px;
 }
+
+.quick-action-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #dbe7e4;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.duplicate-yesterday-button {
+  flex: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .quick-action-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .duplicate-yesterday-button {
+    width: 100%;
+  }
+}
 /* ============================================================================
    Charts
    ============================================================================ */

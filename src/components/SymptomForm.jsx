@@ -299,6 +299,21 @@ function duplicateYesterday() {
           </div>
         </div>
 
+        <div className="quick-action-card">
+          <div>
+            <p className="eyebrow">Quick action</p>
+            <p>Copy yesterday's entry and make any changes.</p>
+          </div>
+
+          <button
+            type="button"
+            className="btn-secondary duplicate-yesterday-button"
+            onClick={duplicateYesterday}
+          >
+            Duplicate Yesterday
+          </button>
+        </div>
+
         <div className="form-group">
           <label htmlFor="date">Date</label>
 
@@ -471,13 +486,6 @@ function duplicateYesterday() {
         )}
 
         <div className="form-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={duplicateYesterday}
-          >
-            Duplicate Yesterday
-          </button>
         
           <button type="submit" className="btn-primary">
             Save form
